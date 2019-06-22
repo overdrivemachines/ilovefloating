@@ -48,8 +48,22 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  # https://github.com/ctran/annotate_models
+  gem 'annotate'
 end
 
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+
+# Bootstrap v4.3.1
+gem "bootstrap", ">= 4.3.1"
+
+gem 'jquery-rails'
+
+# https://github.com/tomkra/font_awesome5_rails
+gem 'font_awesome5_rails'
+
+gem 'devise'
