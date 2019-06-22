@@ -1,7 +1,12 @@
-# README
+# DASHBOARD for ilovefloating.com
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Configuration and System Dependencies
+- Ubuntu 18.04.2 LTS
+- ruby 2.6.2p47 (2019-03-13 revision 67232) [x86_64-linux]
+- Rails 5.2.3
+
+## References
+
 
 Things you may want to cover:
 
