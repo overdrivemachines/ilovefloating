@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Connected Accounts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sid</th>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Balance</th>
+      <th>Balance</th>
+      <th>Connected</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @connected_accounts.each do |connected_account| %>
+      <tr>
+        <td><%= connected_account.sid %></td>
+        <td><%= connected_account.name %></td>
+        <td><%= connected_account.status %></td>
+        <td><%= connected_account.balance %></td>
+        <td><%= connected_account.balance %></td>
+        <td><%= connected_account.connected %></td>
+        <td><%= link_to 'Show', connected_account %></td>
+        <td><%= link_to 'Edit', edit_connected_account_path(connected_account) %></td>
+        <td><%= link_to 'Destroy', connected_account, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Connected Account', new_connected_account_path %>

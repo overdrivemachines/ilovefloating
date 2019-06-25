@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Sid:</strong>
+  <%= @connected_account.sid %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @connected_account.name %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @connected_account.status %>
+</p>
+
+<p>
+  <strong>Balance:</strong>
+  <%= @connected_account.balance %>
+</p>
+
+<p>
+  <strong>Balance:</strong>
+  <%= @connected_account.balance %>
+</p>
+
+<p>
+  <strong>Connected:</strong>
+  <%= @connected_account.connected %>
+</p>
+
+<%= link_to 'Edit', edit_connected_account_path(@connected_account) %> |
+<%= link_to 'Back', connected_accounts_path %>

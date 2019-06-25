@@ -1,0 +1,47 @@
+<%= form_with(model: connected_account, local: true) do |form| %>
+  <% if connected_account.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(connected_account.errors.count, "error") %> prohibited this connected_account from being saved:</h2>
+
+      <ul>
+      <% connected_account.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :sid %>
+    <%= form.text_field :sid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :status %>
+    <%= form.text_field :status %>
+  </div>
+
+  <div class="field">
+    <%= form.label :balance %>
+    <%= form.text_field :balance %>
+  </div>
+
+  <div class="field">
+    <%= form.label :balance %>
+    <%= form.text_field :balance %>
+  </div>
+
+  <div class="field">
+    <%= form.label :connected %>
+    <%= form.date_select :connected %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,2 @@
+class ConnectedAccount < ApplicationRecord
+end
