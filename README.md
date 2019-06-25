@@ -15,7 +15,9 @@
 https://stripe.com/docs/connect/standard-accounts
 client_id - ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy
 redirect_uri - 
-authorize_url - https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy&scope=read_write
+authorize_url - https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy&scope=read_write&redirect_uri=
+
+
 ## Deployment Updates
 ```
 git pull
