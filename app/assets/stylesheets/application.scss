@@ -1,0 +1,59 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ * 
+ * Use @import to import Sass files. Do not use *= require in Sass or your other 
+ * stylesheets will not be able to access the Bootstrap mixins and variables.
+*/
+@import "bootstrap";
+@import "font-awesome-sprockets";
+@import "font-awesome";
+@import "animate.min";
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+$sans-serif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$blue: #3C91E6;
+$white: #FAFFFD;
+$black: #342E37;
+$green: #A2D729;
+$orange: #FA824C;
+
+html {
+  box-sizing: border-box;
+}
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  font-size: 16px;
+  font-family: $sans-serif;
+  color: $black;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+header {
+  background: linear-gradient(90deg, #186bbd 10%, #80b7ef 90%);
+  color: #fdfffc;
+}
+
+main {
+  flex: 1;
+}
+
+#home {
+  width: 100%;
+  // height: 100vh;
+  overflow: hidden;
+  position: relative;
+  padding: 2em 0;
+}
