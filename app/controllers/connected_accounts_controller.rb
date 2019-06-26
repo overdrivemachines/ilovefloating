@@ -61,6 +61,11 @@ class ConnectedAccountsController < ApplicationController
     end
   end
 
+  # GET /connected_accounts/refresh
+  def refresh
+    
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_connected_account
