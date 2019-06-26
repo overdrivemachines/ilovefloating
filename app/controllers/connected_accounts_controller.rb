@@ -69,6 +69,31 @@ class ConnectedAccountsController < ApplicationController
     
   end
 
+  # GET /connected_accounts/add
+  def add
+    if (stripe_params[:error])
+      redirect_to connected_accounts_url
+    else
+      # There is no error.
+      # https://stripe.com/docs/connect/standard-accounts#token-request
+      
+      # Step 4: Fetch the user's credentials from Stripe
+
+      uri = URI('https://connect.stripe.com/oauth/token')
+      res = Net::HTTP.post_form(uri, 
+        'client_secret' => Rails.application.credentials.api_key, 
+        'code' => stripe_params[:code], 
+        'grant_type' => 'authorization_code')
+
+      @result = res.body
+      
+      # https://stripe.com/docs/connect/oauth-reference#post-token-response
+      # store response in database
+
+      # redirect_to home_results_url
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_connected_account
@@ -78,6 +103,10 @@ class ConnectedAccountsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def connected_account_params
       params.require(:connected_account).permit(:sid, :name, :status, :balance, :balance, :connected)
+    end
+
+    def stripe_params
+      params.permit(:scope, :code, :error, :error_description)
     end
 
     # Retrieving all connected accounts
