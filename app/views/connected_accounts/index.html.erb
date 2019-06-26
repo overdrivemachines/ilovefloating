@@ -1,3 +1,76 @@
+<main>
+  <section id="client-list">
+    <div class="container">`
+      <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+          <p>In order to add a sub account, click on the button below:</p>
+          <a class="btn btn-primary" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy&scope=read_write&redirect_uri=" role="button"><i class="fab fa-stripe-s"></i> Connect with Stripe</a>
+        </div>
+      </div>
+    </div>
+    <div class="clients">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 offset-lg-2">
+            <h3>CLIENT LIST</h3>
+
+            <div class="bg">
+              <table class="accounts-list">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Details</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% serial = 0 %>
+                  <% for account in @accounts do %>
+                  <tr class="account-item">
+                    <td class="serial-number"><%= serial = serial + 1 %></td>
+                    <td class="account-details-c">
+                      <div class="name">
+                        <%= account["settings"]["dashboard"]["display_name"] %>
+                      </div>
+                      <div class="account-details font-weight-bold"><div class="balance">Balance: Unknown</div>
+                        <div class="percent">Commission: Unknown%</div>
+                      </div>
+                      <div class="account-details">
+                        <div class="business-url">
+                          <a href="<%= account['business_profile']['url'] %>"><%= account["business_profile"]["url"] %></a>
+                        </div>
+
+                      </div>
+                      <div class="account-details small">
+                        <div class="account-id">ID: <%= account["id"] %></div>
+                        <div class="publishable-key">Public Key: Unknown </div>
+                        <div class="refresh-token">Refresh Token: Unknown</div>
+                        <div class="access-token">Access Token: Unknown </div>
+
+                      </div>
+
+                    </td>
+                    <td>
+                      <ul class="client-actions">
+                        <li><a href="#">Edit</a></li>
+                        <li><a href="#">Remove</a></li>
+                      </ul>
+                    </td>
+
+                  </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+
+<!-- ======================== -->
 <p id="notice"><%= notice %></p>
 
 <h1>Connected Accounts</h1>

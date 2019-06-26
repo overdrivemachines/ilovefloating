@@ -1,3 +1,4 @@
+require 'stripe'
 class ConnectedAccountsController < ApplicationController
   before_action :set_connected_account, only: [:show, :edit, :update, :destroy]
 
@@ -5,6 +6,8 @@ class ConnectedAccountsController < ApplicationController
   # GET /connected_accounts.json
   def index
     @connected_accounts = ConnectedAccount.all
+    list = list_of_accounts
+    @accounts = list_of_accounts["data"]
   end
 
   # GET /connected_accounts/1
@@ -75,5 +78,12 @@ class ConnectedAccountsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def connected_account_params
       params.require(:connected_account).permit(:sid, :name, :status, :balance, :balance, :connected)
+    end
+
+    # Retrieving all connected accounts
+    # https://stripe.com/docs/api/accounts/list?lang=curl
+    def list_of_accounts
+      Stripe.api_key = Rails.application.credentials.api_key
+      return Stripe::Account.list
     end
 end

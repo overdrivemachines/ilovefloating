@@ -67,3 +67,6 @@ gem 'jquery-rails'
 gem 'font-awesome-sass', '~> 5.8.1'
 
 gem 'devise'
+
+# https://github.com/stripe/stripe-ruby
+gem 'stripe'
