@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_25_085620) do
+ActiveRecord::Schema.define(version: 2019_06_26_011845) do
 
   create_table "connected_accounts", force: :cascade do |t|
     t.string "sid"
@@ -20,6 +20,14 @@ ActiveRecord::Schema.define(version: 2019_06_25_085620) do
     t.date "connected"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "publishable_key"
+    t.string "refresh_token"
+    t.string "access_token"
+    t.string "city"
+    t.string "state"
+    t.string "postal_code"
+    t.string "url"
+    t.string "dashboard_display_name"
   end
 
   create_table "users", force: :cascade do |t|
