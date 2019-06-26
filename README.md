@@ -75,6 +75,8 @@ $ sudo certbot --nginx
 - Shortcuts to SSH clients - https://askubuntu.com/questions/754450/shortcuts-to-ssh-clients
 - How To Configure SSH Key-Based Authentication on a Linux Server - https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server
 
+## Stripe API
+- List connected accounts: https://stripe.com/docs/api/accounts/list
 
 
 
