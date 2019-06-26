@@ -64,6 +64,6 @@ gem "bootstrap", ">= 4.3.1"
 gem 'jquery-rails'
 
 # https://github.com/tomkra/font_awesome5_rails
-gem 'font_awesome5_rails'
+gem 'font-awesome-sass', '~> 5.8.1'
 
 gem 'devise'
