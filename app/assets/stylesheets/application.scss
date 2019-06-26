@@ -18,14 +18,16 @@
 @import "font-awesome";
 @import "animate";
 
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:400,700&display=swap');
 
 $sans-serif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$blue: #3C91E6;
-$white: #FAFFFD;
-$black: #342E37;
-$green: #A2D729;
-$orange: #FA824C;
+$monospace: 'Inconsolata', monospace;
+$blue: #3c91e6;
+$white: #fafffd;
+$black: #342e37;
+$green: #a2d729;
+$orange: #fa824c;
+$light-gray: #cdd7d6;
 
 html {
   box-sizing: border-box;
@@ -37,6 +39,7 @@ body {
   font-size: 16px;
   font-family: $sans-serif;
   color: $black;
+  background: $white;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -50,10 +53,98 @@ main {
   flex: 1;
 }
 
-#home {
+#client-list {
   width: 100%;
   // height: 100vh;
   overflow: hidden;
   position: relative;
   padding: 2em 0;
+}
+.clients {
+  margin-top: 60px;
+  padding: 60px 0;
+  background-color: $light-gray;
+
+  h3 {
+    font-weight: 700;
+    font-size: 2.1em;
+    color: #1f2d3d;
+    opacity: 0.6;
+  }
+  .bg {
+    background: $white;
+    color: $black;
+  }
+
+  table.accounts-list {
+    margin: 2em 0;
+    color: $black;
+    width: 100%;
+    th {
+      padding: 1em 0;
+      font-size: 16px;
+      font-weight: normal;
+      color: $black;
+      padding-left: 2em;
+      display: none;
+    }
+  }
+  tr.account-item {
+    border-bottom: 1px solid #ccc;
+    transition: 0.5s;
+
+    td {
+      padding-top: 16px;
+      padding-bottom: 16px;
+      vertical-align: middle;
+    }
+  }
+  tr.account-item:hover {
+    background: $light-gray;
+    color: #1f2d3d;
+    opacity: 0.75;
+  }
+  tr.account-item:last-child {
+    border-bottom: none;
+  }
+  td.serial-number {
+    font-size: 2.85em;
+    font-weight: 700;
+    width: 100px;
+    text-align: right;
+    border-right: 1px solid #ccc;
+    padding-right: 16px;
+  }
+  td.account-details-c {
+    padding-left: 16px;
+    padding-right: 16px;
+    max-width: 250px;
+  }
+  .name {
+    font-weight: 700;
+    line-height: 1.3;
+    padding-bottom: 0.33em;
+    font-size: 1.1em;
+    margin-top: 4px;
+  }
+  .account-details {
+    padding-bottom: 0.3em;
+  }
+  .account-details > div {
+    font-size: 0.85em;
+    display: inline-block;
+    padding-right: 1em;
+    // width: 190px;
+    line-height: 1.3;
+  }
+  .small {
+    font-family: $monospace;
+  }
+  .client-actions {
+    list-style: none;
+    // text-align: center;
+    li {
+      padding: 0.1em;
+    }
+  }
 }
