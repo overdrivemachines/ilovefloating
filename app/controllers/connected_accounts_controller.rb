@@ -66,19 +66,20 @@ class ConnectedAccountsController < ApplicationController
   # GET /connected_accounts/refresh
   def refresh
     # sync local accounts with online stripe accounts
-    # accounts on db
-    connected_accounts = ConnectedAccount.all
+    
     # accounts on stripe
     online_accounts = list_of_accounts_online["data"]
     puts online_accounts
 
     # update local db based on accounts on stripe
+
+    # added accounts from stripe to local db
     online_accounts.each { |online_account|
       connected_account = ConnectedAccount.where(sid: online_account.id).limit(1)[0]
       if (connected_account.nil?)
         # if account is not in the db, create a new one
         connected_account = ConnectedAccount.new
-        connected_account.sid = online_account.id
+        connected_account.sid = online_account["id"]
         puts "Found new account online"
         # connected_account.connected = Date.today
       end
@@ -96,6 +97,24 @@ class ConnectedAccountsController < ApplicationController
       connected_account.save
       puts connected_account.errors.inspect
     }
+
+    # removing local accounts that are not there on stripe
+    # accounts on db
+    connected_accounts = ConnectedAccount.all
+    connected_accounts.each { |connected_account| 
+      found = false;
+      # find connected_account online
+      online_accounts.each { |online_account|
+        if (connected_account.sid == online_account["id"])
+          found = true
+        end
+      }
+      if (found == false)
+        connected_account.destroy
+      end
+    }
+
+
 
     redirect_to connected_accounts_url
   end
