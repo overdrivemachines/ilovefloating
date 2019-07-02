@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Ilovefloating</title>
+    <title>Maximum Floats Dashboard - <%= content_for?(:title) ? yield(:title) : 'List of Accounts' %></title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -22,7 +22,7 @@
 
         <div class="collapse navbar-collapse" id="navbar-main">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item <%= 'active' if current_page?(connected_accounts_path) || current_page?(root_path) %>">
               <%= link_to "Client List", connected_accounts_path, class: "nav-link" %>
               <!-- <a class="nav-link" href="#">Client List</a> -->
             </li>
