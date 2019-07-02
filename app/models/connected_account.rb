@@ -18,7 +18,9 @@
 #  postal_code            :string
 #  url                    :string
 #  dashboard_display_name :string
+#  commission             :decimal(5, 2)
 #
 
 class ConnectedAccount < ApplicationRecord
+  validates :sid, presence: true
 end
