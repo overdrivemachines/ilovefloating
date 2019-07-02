@@ -1,5 +1,13 @@
 <main>
   <section>
+    <% flash.each do |name, msg| %>
+      <div class="alert <%= bootstrap_class_for(name) %> alert-dismissible fade show" role="alert">
+        <%= msg %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <% end %>
     <p>
       <%= @result %>
     </p>
