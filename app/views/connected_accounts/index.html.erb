@@ -23,23 +23,21 @@
           <div class="col-lg-8 offset-lg-2">
             <h3>CLIENT LIST</h3>
             <%= link_to "Refresh", connected_accounts_refresh_path, class: "btn btn-primary mt-2" %>
-            <div class="bg">
-              <table class="accounts-list">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Details</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% serial = 0 %>
-                  <% @connected_accounts.each do |connected_account| %>
-                    <%= render connected_account, serial: serial = serial + 1 %>
-                  <% end %>
-                </tbody>
-              </table>
-            </div>
+            <table class="accounts-list bg">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Details</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% serial = 0 %>
+                <% @connected_accounts.each do |connected_account| %>
+                  <%= render connected_account, serial: serial = serial + 1 %>
+                <% end %>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

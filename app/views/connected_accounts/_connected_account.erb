@@ -5,7 +5,7 @@
       <%= connected_account.name %>
     </div>
     <div class="account-details font-weight-bold"><div class="balance">Balance: <%= connected_account.balance %> Unknown</div>
-      <div class="percent">Commission: Unknown%</div>
+      <div class="percent">Commission: <%= connected_account.commission %>%</div>
     </div>
     <div class="account-details">
       <div class="business-url">
@@ -22,7 +22,7 @@
   </td>
   <td>
     <ul class="client-actions">
-      <li><a href="#">Edit</a></li>
+      <li><%= link_to 'Edit', edit_connected_account_path(connected_account), remote: true %> </li>
       <li><%= link_to 'Remove', connected_account, method: :delete, data: { confirm: 'Are you sure?' } %></li>
     </ul>
   </td>

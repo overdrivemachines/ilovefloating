@@ -43,20 +43,23 @@ class ConnectedAccountsController < ApplicationController
   # PATCH/PUT /connected_accounts/1
   # PATCH/PUT /connected_accounts/1.json
   def update
-    respond_to do |format|
-      if @connected_account.update(connected_account_params)
-        format.html { redirect_to @connected_account, notice: 'Connected account was successfully updated.' }
-        format.json { render :show, status: :ok, location: @connected_account }
-      else
-        format.html { render :edit }
-        format.json { render json: @connected_account.errors, status: :unprocessable_entity }
-      end
-    end
+    @connected_account.update(connected_account_params)
+    redirect_to connected_accounts_url, notice: 'Connected account was successfully updated.'
+    # respond_to do |format|
+    #   if @connected_account.update(connected_account_params)
+    #     format.html { redirect_to @connected_account, notice: 'Connected account was successfully updated.' }
+    #     format.json { render :show, status: :ok, location: @connected_account }
+    #   else
+    #     format.html { render :edit }
+    #     format.json { render json: @connected_account.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # DELETE /connected_accounts/1
   # DELETE /connected_accounts/1.json
   def destroy
+    Stripe.api_key = Rails.application.credentials.api_key
     acct = Stripe::Account.retrieve(@connected_account.sid)
     acct.deauthorize('ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy')
     @connected_account.destroy
@@ -80,6 +83,7 @@ class ConnectedAccountsController < ApplicationController
         # if account is not in the db, create a new one
         connected_account = ConnectedAccount.new
         connected_account.sid = online_account["id"]
+        connected_account.commission = 50
         puts "Found new account online"
         # connected_account.connected = Date.today
       end
@@ -156,6 +160,7 @@ class ConnectedAccountsController < ApplicationController
       connected_account = ConnectedAccount.where(sid: @result["stripe_user_id"]).limit(1)[0]
       if connected_account.nil?
         connected_account = ConnectedAccount.new
+        connected_account.commission = 50
       end
       connected_account.sid = @result["stripe_user_id"]
       connected_account.publishable_key = @result["stripe_publishable_key"]
@@ -192,7 +197,7 @@ class ConnectedAccountsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def connected_account_params
-      params.require(:connected_account).permit(:sid, :name, :status, :balance, :balance, :connected)
+      params.require(:connected_account).permit(:commission)
     end
 
     def stripe_params
