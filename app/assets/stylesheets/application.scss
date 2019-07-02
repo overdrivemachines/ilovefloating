@@ -18,10 +18,10 @@
 @import "font-awesome";
 @import "animate";
 
-@import url('https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:400,700&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:400,700&display=swap");
 
 $sans-serif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$monospace: 'Inconsolata', monospace;
+$monospace: "Inconsolata", monospace;
 $blue: #3c91e6;
 $white: #fafffd;
 $black: #342e37;
@@ -142,7 +142,7 @@ main {
   }
   .client-actions {
     list-style: none;
-    // text-align: center;
+    padding: 0;
     li {
       padding: 0.1em;
     }
