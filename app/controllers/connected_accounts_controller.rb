@@ -5,7 +5,7 @@ class ConnectedAccountsController < ApplicationController
   # GET /connected_accounts
   # GET /connected_accounts.json
   def index
-    @accounts = ConnectedAccount.all
+    @connected_accounts = ConnectedAccount.all
     # list = list_of_accounts_online
     # @accounts = list_of_accounts_online["data"]
   end
@@ -57,11 +57,10 @@ class ConnectedAccountsController < ApplicationController
   # DELETE /connected_accounts/1
   # DELETE /connected_accounts/1.json
   def destroy
+    acct = Stripe::Account.retrieve(@connected_account.sid)
+    acct.deauthorize('ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy')
     @connected_account.destroy
-    respond_to do |format|
-      format.html { redirect_to connected_accounts_url, notice: 'Connected account was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    redirect_to connected_accounts_url, notice: 'Connected account was successfully removed.'
   end
 
   # GET /connected_accounts/refresh
@@ -71,24 +70,31 @@ class ConnectedAccountsController < ApplicationController
     connected_accounts = ConnectedAccount.all
     # accounts on stripe
     online_accounts = list_of_accounts_online["data"]
+    puts online_accounts
 
     # update local db based on accounts on stripe
     online_accounts.each { |online_account|
-      connected_account = ConnectedAccount.where(sid: online_account.id)
+      connected_account = ConnectedAccount.where(sid: online_account.id).limit(1)[0]
       if (connected_account.nil?)
         # if account is not in the db, create a new one
         connected_account = ConnectedAccount.new
+        connected_account.sid = online_account.id
+        puts "Found new account online"
         # connected_account.connected = Date.today
       end
       connected_account.name = online_account["business_profile"]["name"]
       # connected_account.status = 
       # connected_account.balance =
-      connected_account.city = online_account["business_profile"]["support_address"]["city"]
-      connected_account.state = online_account["business_profile"]["support_address"]["state"]
-      connected_account.postal_code = online_account["business_profile"]["support_address"]["postal_code"]
+      if (online_account["business_profile"]["support_address"])
+        connected_account.city = online_account["business_profile"]["support_address"]["city"]
+        connected_account.state = online_account["business_profile"]["support_address"]["state"]
+        connected_account.postal_code = online_account["business_profile"]["support_address"]["postal_code"]
+      end
       connected_account.url = online_account["business_profile"]["url"]
       connected_account.dashboard_display_name = online_account["settings"]["dashboard"]["display_name"]
+      puts connected_account.inspect
       connected_account.save
+      puts connected_account.errors.inspect
     }
 
     redirect_to connected_accounts_url
