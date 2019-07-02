@@ -6,6 +6,10 @@
   - Connected Accounts can be added, edited and removed. 
   - The Application Fee charged to the Connected Accounts can be edited as a percentage.
 
+## Domain Model
+Run `rake generate_erd` to regenerate (must have graphvis).
+![](/erd.png)
+
 ## Configuration and System Dependencies
 - Ubuntu 18.04.2 LTS
 - ruby 2.6.2p47 (2019-03-13 revision 67232) [x86_64-linux]

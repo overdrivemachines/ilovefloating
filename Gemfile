@@ -51,6 +51,8 @@ group :development do
 
   # https://github.com/ctran/annotate_models
   gem 'annotate'
+
+  gem 'rails-erd'
 end
 
 
@@ -70,3 +72,5 @@ gem 'devise'
 
 # https://github.com/stripe/stripe-ruby
 gem 'stripe'
+
+gem 'record_tag_helper', '~> 1.0'
