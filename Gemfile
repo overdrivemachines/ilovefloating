@@ -74,3 +74,5 @@ gem 'devise'
 gem 'stripe'
 
 gem 'record_tag_helper', '~> 1.0'
+
+gem 'jquery-rails'
