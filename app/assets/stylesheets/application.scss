@@ -89,7 +89,7 @@ main {
       display: none;
     }
   }
-  tr.account-item {
+  tr.connected_account {
     border-bottom: 1px solid #ccc;
     transition: 0.5s;
 
@@ -99,12 +99,12 @@ main {
       vertical-align: middle;
     }
   }
-  tr.account-item:hover {
+  tr.connected_account:hover {
     background: $light-gray;
     color: #1f2d3d;
     opacity: 0.75;
   }
-  tr.account-item:last-child {
+  tr.connected_account:last-child {
     border-bottom: none;
   }
   td.serial-number {
