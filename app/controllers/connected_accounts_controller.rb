@@ -85,12 +85,52 @@ class ConnectedAccountsController < ApplicationController
         'code' => stripe_params[:code], 
         'grant_type' => 'authorization_code')
 
-      @result = res.body
-      
+      @result = JSON.parse(res.body)
+      puts @result
+
+      if (@result.nil?)
+        redirect_to connected_accounts_url, flash: { error: "No response from Stripe"} 
+        return
+      elsif (@result["error"])
+        redirect_to connected_accounts_url, flash: { error: @result["error"] + ": " + @result["error_description"] }
+        return
+      elsif (@result["stripe_user_id"].nil?)
+        redirect_to connected_accounts_url, flash: { error: "stripe_user_id is blank. Cannot proceed. Account was not added." }
+        return
+      end
+
       # https://stripe.com/docs/connect/oauth-reference#post-token-response
       # store response in database
 
-      # redirect_to home_results_url
+      # Searching and Finding: http://www.xyzpub.com/en/ruby-on-rails/4.0/queries.html
+      connected_account = ConnectedAccount.where(sid: @result["stripe_user_id"]).limit(1)[0]
+      if connected_account.nil?
+        connected_account = ConnectedAccount.new
+      end
+      connected_account.sid = @result["stripe_user_id"]
+      connected_account.publishable_key = @result["stripe_publishable_key"]
+      connected_account.refresh_token = @result["refresh_token"]
+      connected_account.access_token = @result["accress_token"]
+      connected_account.connected = Date.today
+
+      Stripe.api_key = Rails.application.credentials.api_key
+      retrieved_account = Stripe::Account.retrieve(@result["stripe_user_id"])
+      
+      connected_account.name = retrieved_account["business_profile"]["name"]
+      # connected_account.status = 
+      # connected_account.balance =
+      connected_account.city = retrieved_account["business_profile"]["support_address"]["city"]
+      connected_account.state = retrieved_account["business_profile"]["support_address"]["state"]
+      connected_account.postal_code = retrieved_account["business_profile"]["support_address"]["postal_code"]
+      connected_account.url = retrieved_account["business_profile"]["url"]
+      connected_account.dashboard_display_name = retrieved_account["settings"]["dashboard"]["display_name"]
+
+
+      if connected_account.save
+        redirect_to connected_accounts_url, flash: { success: "Strip Account " + connected_account.dashboard_display_name + " added."} 
+      else
+        redirect_to connected_accounts_url, flash: { error: connected_account.errors } 
+      end
     end
   end
 
