@@ -5,9 +5,9 @@ class ConnectedAccountsController < ApplicationController
   # GET /connected_accounts
   # GET /connected_accounts.json
   def index
-    @connected_accounts = ConnectedAccount.all
-    list = list_of_accounts
-    @accounts = list_of_accounts["data"]
+    @accounts = ConnectedAccount.all
+    # list = list_of_accounts_online
+    # @accounts = list_of_accounts_online["data"]
   end
 
   # GET /connected_accounts/1
@@ -66,7 +66,32 @@ class ConnectedAccountsController < ApplicationController
 
   # GET /connected_accounts/refresh
   def refresh
-    
+    # sync local accounts with online stripe accounts
+    # accounts on db
+    connected_accounts = ConnectedAccount.all
+    # accounts on stripe
+    online_accounts = list_of_accounts_online["data"]
+
+    # update local db based on accounts on stripe
+    online_accounts.each { |online_account|
+      connected_account = ConnectedAccount.where(sid: online_account.id)
+      if (connected_account.nil?)
+        # if account is not in the db, create a new one
+        connected_account = ConnectedAccount.new
+        # connected_account.connected = Date.today
+      end
+      connected_account.name = online_account["business_profile"]["name"]
+      # connected_account.status = 
+      # connected_account.balance =
+      connected_account.city = online_account["business_profile"]["support_address"]["city"]
+      connected_account.state = online_account["business_profile"]["support_address"]["state"]
+      connected_account.postal_code = online_account["business_profile"]["support_address"]["postal_code"]
+      connected_account.url = online_account["business_profile"]["url"]
+      connected_account.dashboard_display_name = online_account["settings"]["dashboard"]["display_name"]
+      connected_account.save
+    }
+
+    redirect_to connected_accounts_url
   end
 
   # GET /connected_accounts/add
@@ -151,7 +176,7 @@ class ConnectedAccountsController < ApplicationController
 
     # Retrieving all connected accounts
     # https://stripe.com/docs/api/accounts/list?lang=curl
-    def list_of_accounts
+    def list_of_accounts_online
       Stripe.api_key = Rails.application.credentials.api_key
       return Stripe::Account.list
     end
