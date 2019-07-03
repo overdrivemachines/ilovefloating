@@ -73,6 +73,12 @@ $ sudo certbot --nginx
 
 
 ## References
+- AJAX
+  - https://github.com/overdrivemachines/TaskSnail/blob/master/app/controllers/tasks_controller.rb
+  - https://launchschool.com/blog/the-detailed-guide-on-how-ajax-works-with-ruby-on-rails
+  - https://rubyplus.com/articles/4211-Using-Ajax-and-jQuery-in-Rails-5-Apps
+- Understanding Charges - https://stripe.com/docs/connect/charges
+- Direct Charges - https://stripe.com/docs/connect/direct-charges
 
 
 ## How to Connet to Your Remote Server?
