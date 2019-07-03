@@ -10,12 +10,12 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= form.label :commission %>
-    <%= form.text_field :commission %>
+  <div class="form-group">
+    <%= form.label :commission, "New Commission" %>
+    <%= form.number_field :commission, {in: 0..100,  class: "form-control"} %>
   </div>
   <div class="actions">
+    <%= link_to "Cancel", connected_account, class: "btn btn-secondary btn-sm", remote: true %>
     <button type="button" class="btn btn-secondary btn-sm">Close</button>
     <%= form.submit "Save Changes", class: "btn btn-primary btn-sm" %>
   </div>

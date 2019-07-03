@@ -147,4 +147,16 @@ main {
       padding: 0.1em;
     }
   }
+
+  .account-details .tokens {
+    width: 100%;
+    display: block;
+  }
+  form.edit_connected_account label {
+    font-size: 0.85em;
+    font-weight: 700;
+  }
+  #connected_account_commission {
+    width: 80px;
+  }
 }

@@ -1,2 +1,3 @@
-$('#<%= dom_id(@connected_account) %> .account-details-c').empty();
-$('#<%= dom_id(@connected_account) %> .account-details-c').append('<%= j(render(partial: "form", locals:{connected_account: @connected_account})) %>');
+$('#<%= dom_id(@connected_account) %> .tokens').parents().removeClass("small")
+$('#<%= dom_id(@connected_account) %> .tokens').parent().append('<%= j(render(partial: "form", locals:{connected_account: @connected_account})) %>');
+$('#<%= dom_id(@connected_account) %> .tokens').hide();
