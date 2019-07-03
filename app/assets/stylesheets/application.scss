@@ -92,6 +92,7 @@ main {
   tr.connected_account {
     border-bottom: 1px solid #ccc;
     transition: 0.5s;
+    opacity: 0.75;
 
     td {
       padding-top: 16px;
@@ -100,9 +101,9 @@ main {
     }
   }
   tr.connected_account:hover {
-    background: $light-gray;
+    // background: $light-gray;
     color: #1f2d3d;
-    opacity: 0.75;
+    opacity: 1;
   }
   tr.connected_account:last-child {
     border-bottom: none;
