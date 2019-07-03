@@ -1,4 +1,5 @@
 require 'stripe'
+require 'net/http'
 class ConnectedAccountsController < ApplicationController
   before_action :set_connected_account, only: [:show, :edit, :update, :destroy]
 
