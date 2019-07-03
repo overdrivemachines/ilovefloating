@@ -178,8 +178,8 @@ class ConnectedAccountsController < ApplicationController
       connected_account.city = retrieved_account["business_profile"]["support_address"].try(["city"])
       connected_account.state = retrieved_account["business_profile"]["support_address"].try(["state"])
       connected_account.postal_code = retrieved_account["business_profile"]["support_address"].try(["postal_code"])
-      connected_account.url = retrieved_account["business_profile"].try(["url"])
-      connected_account.dashboard_display_name = retrieved_account["settings"]["dashboard"].try(["display_name"])
+      connected_account.url = retrieved_account["business_profile"]["url"]
+      connected_account.dashboard_display_name = retrieved_account["settings"]["dashboard"]["display_name"]
 
       if connected_account.save
         redirect_to connected_accounts_url, flash: { success: "Strip Account " + connected_account.dashboard_display_name + " added."} 
