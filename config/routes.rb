@@ -1,6 +1,14 @@
 # == Route Map
 #
 #                     Prefix Verb   URI Pattern                                                                              Controller#Action
+#               transactions GET    /transactions(.:format)                                                                  transactions#index
+#                            POST   /transactions(.:format)                                                                  transactions#create
+#            new_transaction GET    /transactions/new(.:format)                                                              transactions#new
+#           edit_transaction GET    /transactions/:id/edit(.:format)                                                         transactions#edit
+#                transaction GET    /transactions/:id(.:format)                                                              transactions#show
+#                            PATCH  /transactions/:id(.:format)                                                              transactions#update
+#                            PUT    /transactions/:id(.:format)                                                              transactions#update
+#                            DELETE /transactions/:id(.:format)                                                              transactions#destroy
 #                 home_index GET    /home/index(.:format)                                                                    home#index
 #                 home_check GET    /home/check(.:format)                                                                    home#check
 #               home_results GET    /home/results(.:format)                                                                  home#results
@@ -37,6 +45,7 @@
 #       rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create
 
 Rails.application.routes.draw do
+  resources :transactions
   get 'home/index'
   get 'home/check'
   get 'home/results'

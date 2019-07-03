@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_02_071357) do
+ActiveRecord::Schema.define(version: 2019_07_03_043634) do
 
   create_table "connected_accounts", force: :cascade do |t|
     t.string "sid"
@@ -29,6 +29,21 @@ ActiveRecord::Schema.define(version: 2019_07_02_071357) do
     t.string "url"
     t.string "dashboard_display_name"
     t.decimal "commission", precision: 5, scale: 2
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "phone"
+    t.date "start_date"
+    t.string "sales_rep_name"
+    t.string "item"
+    t.decimal "price", precision: 6, scale: 2
+    t.integer "connected_accounts_id"
+    t.string "charge_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["connected_accounts_id"], name: "index_transactions_on_connected_accounts_id"
   end
 
   create_table "users", force: :cascade do |t|
