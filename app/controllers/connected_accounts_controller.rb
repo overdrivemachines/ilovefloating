@@ -164,7 +164,7 @@ class ConnectedAccountsController < ApplicationController
       connected_account.sid = @result["stripe_user_id"]
       connected_account.publishable_key = @result["stripe_publishable_key"]
       connected_account.refresh_token = @result["refresh_token"]
-      connected_account.access_token = @result["accress_token"]
+      connected_account.access_token = @result["access_token"]
       connected_account.connected = Date.today
 
       Stripe.api_key = Rails.application.credentials.api_key
