@@ -175,9 +175,11 @@ class ConnectedAccountsController < ApplicationController
       connected_account.name = retrieved_account["business_profile"]["name"]
       # connected_account.status = 
       # connected_account.balance =
-      connected_account.city = retrieved_account["business_profile"]["support_address"].try(["city"])
-      connected_account.state = retrieved_account["business_profile"]["support_address"].try(["state"])
-      connected_account.postal_code = retrieved_account["business_profile"]["support_address"].try(["postal_code"])
+      if (retrieved_account["business_profile"]["support_address"])
+        connected_account.city = retrieved_account["business_profile"]["support_address"]["city"]
+        connected_account.state = retrieved_account["business_profile"]["support_address"]["state"]
+        connected_account.postal_code = retrieved_account["business_profile"]["support_address"]["postal_code"]
+      end
       connected_account.url = retrieved_account["business_profile"]["url"]
       connected_account.dashboard_display_name = retrieved_account["settings"]["dashboard"]["display_name"]
 
