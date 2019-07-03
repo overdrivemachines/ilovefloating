@@ -169,6 +169,8 @@ class ConnectedAccountsController < ApplicationController
 
       Stripe.api_key = Rails.application.credentials.api_key
       retrieved_account = Stripe::Account.retrieve(@result["stripe_user_id"])
+      logger.info "Result from Stripe:"
+      logger.info retrieved_account
       
       connected_account.name = retrieved_account["business_profile"]["name"]
       # connected_account.status = 
