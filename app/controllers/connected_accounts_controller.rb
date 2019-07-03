@@ -118,8 +118,6 @@ class ConnectedAccountsController < ApplicationController
       end
     }
 
-
-
     redirect_to connected_accounts_url
   end
 
@@ -140,8 +138,8 @@ class ConnectedAccountsController < ApplicationController
         'grant_type' => 'authorization_code')
 
       @result = JSON.parse(res.body)
-      puts @result
-
+      logger.debug "Result from Stripe:"
+      logger.debug @result
       if (@result.nil?)
         redirect_to connected_accounts_url, flash: { error: "No response from Stripe"} 
         return
