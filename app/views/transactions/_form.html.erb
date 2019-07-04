@@ -52,35 +52,26 @@
         </div>
       </div>
     </div>
-
-    <div class="form-row">
-      <%= form.label :price %>
-      <%= form.text_field :price %>
-    </div>
   </div>
 
   <div class="form-group">
     <div class="form-row">
-      <div id="card-element"></div>
+
+      <%= label_tag(:"card-element", "Credit Card") %>
+      <div id="card-element">
+        <!-- A Stripe Element will be inserted here. -->
+      </div>
+      <!-- Used to display form errors. -->
+      <div id="card-errors" role="alert"></div>
     </div>
   </div>
   
 
   <div class="form-group">
-    <%= form.label :connected_account_id %>
-    <%= form.text_field :connected_account_id %>
-  </div>
-
-  <div class="form-row">
-    <label for="card-element">
-      Credit or debit card
-    </label>
-    <div id="card-element">
-      <!-- A Stripe Element will be inserted here. -->
+    <div class="form-row">
+      <%= form.label :connected_account_id, "Account" %>
+      <%= form.text_field :connected_account_id %>
     </div>
-
-    <!-- Used to display form errors. -->
-    <div id="card-errors" role="alert"></div>
   </div>
 
   <div class="actions">
