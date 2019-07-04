@@ -1,5 +1,22 @@
-<h1>New Transaction</h1>
-
-<%= render 'form', transaction: @transaction %>
-
-<%= link_to 'Back', transactions_path %>
+<main>
+  <section id="new-transaction">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+          <h3>NEW TRANSACTION</h3>
+          <% flash.each do |name, msg| %>
+            <div class="alert <%= bootstrap_class_for(name) %> alert-dismissible fade show" role="alert">
+              <%= msg %>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <% end %>
+          <div class="form-container">
+            <%= render 'form', transaction: @transaction %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

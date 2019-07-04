@@ -39,11 +39,11 @@ ActiveRecord::Schema.define(version: 2019_07_03_043634) do
     t.string "sales_rep_name"
     t.string "item"
     t.decimal "price", precision: 6, scale: 2
-    t.integer "connected_accounts_id"
+    t.integer "connected_account_id"
     t.string "charge_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["connected_accounts_id"], name: "index_transactions_on_connected_accounts_id"
+    t.index ["connected_account_id"], name: "index_transactions_on_connected_account_id"
   end
 
   create_table "users", force: :cascade do |t|
