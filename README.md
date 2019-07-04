@@ -73,6 +73,7 @@ $ sudo certbot --nginx
 
 
 ## References
+- Rails Naming Conventions - https://gist.github.com/iangreenleaf/b206d09c587e8fc6399e
 - AJAX
   - https://github.com/overdrivemachines/TaskSnail/blob/master/app/controllers/tasks_controller.rb
   - https://launchschool.com/blog/the-detailed-guide-on-how-ajax-works-with-ruby-on-rails
