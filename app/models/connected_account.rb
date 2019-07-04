@@ -24,4 +24,6 @@
 class ConnectedAccount < ApplicationRecord
   has_many :transactions
   validates :sid, presence: true
+
+  
 end

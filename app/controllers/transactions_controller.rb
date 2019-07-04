@@ -26,6 +26,9 @@ class TransactionsController < ApplicationController
   def create
     @transaction = Transaction.new(transaction_params)
 
+
+    asdf
+
     respond_to do |format|
       if @transaction.save
         format.html { redirect_to @transaction, notice: 'Transaction was successfully created.' }
@@ -69,6 +72,6 @@ class TransactionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def transaction_params
-      params.require(:transaction).permit(:name, :email, :phone, :start_date, :sales_rep_name, :item, :price, :connected_accounts_id, :charge_id)
+      params.require(:transaction).permit(:name, :email, :phone, :start_date, :sales_rep_name, :item, :price, :connected_accounts_id, :charge_id, :stripeToken)
     end
 end

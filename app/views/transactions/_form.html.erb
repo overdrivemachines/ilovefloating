@@ -1,5 +1,4 @@
-<script src="https://js.stripe.com/v3/"></script>
-<%= form_with(model: transaction, local: true, class: "col-lg-10") do |form| %>
+<%= form_with(model: transaction, local: true, class: "col-lg-10", id: "new-transaction-form") do |form| %>
   <% if transaction.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
@@ -43,12 +42,12 @@
       <!-- <%= form.text_field :item %> -->
       <div class="w-100 py-3">
         <div class="form-check">
-          <%= label_tag(:item, "6 Weeks - $447.00") %>
-          <%= radio_button_tag(:item_id, "0") %>      
+          <%= label_tag(:transaction_item_0, "6 Weeks - $447.00") %>
+          <%= form.radio_button(:item, "0") %>      
         </div>
         <div class="form-check">
-          <%= label_tag(:item, "Single Float - $75.00") %>
-          <%= radio_button_tag(:item, "1") %>
+          <%= label_tag(:transaction_item_1, "Single Float - $75.00") %>
+          <%= form.radio_button(:item, "1") %>
         </div>
       </div>
     </div>
@@ -61,6 +60,9 @@
       <div id="card-element">
         <!-- A Stripe Element will be inserted here. -->
       </div>
+      
+    </div>
+    <div class="form-row">
       <!-- Used to display form errors. -->
       <div id="card-errors" role="alert"></div>
     </div>
@@ -70,11 +72,11 @@
   <div class="form-group">
     <div class="form-row">
       <%= form.label :connected_account_id, "Account" %>
-      <%= form.text_field :connected_account_id %>
+      <%= form.collection_select(:connected_account_id, ConnectedAccount.all, :id, :dashboard_display_name)%>
     </div>
   </div>
 
-  <div class="actions">
-    <%= form.submit %>
+  <div class="form-group">
+    <%= form.submit "Charge Card", class: "btn btn-charge", data: {disable_with: false} %>
   </div>
 <% end %>

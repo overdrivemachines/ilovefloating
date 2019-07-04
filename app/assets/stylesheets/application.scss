@@ -241,7 +241,8 @@ h3 {
   input::placeholder {
     color: #87bbfd;
   }
-  #transaction_start_date_1i, #transaction_start_date_2i, #transaction_start_date_3i {
+  // #transaction_start_date_1i, #transaction_start_date_2i, #transaction_start_date_3i {
+  select {
     padding: .375rem .75rem;
     border: 1px solid #819efc;
     background: transparent;
@@ -283,8 +284,15 @@ h3 {
     // background: #6772e5;
     // border: 1px solid #6772e5;
     border: 1px solid #fff;
+    label {
+      color: #fff;
+    }
+  }  
+  .btn-charge {
+    background-color: #d782d9;
+    box-shadow: 0 6px 9px rgba(50, 50, 93, 0.06), 0 2px 5px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 #e298d8;
   }
-  
 }
 #card-element {
   width: 100%;
@@ -293,4 +301,9 @@ h3 {
 .StripeElement {
   // width: 80%;
   padding: 11px 15px 11px 0;
+}
+
+#card-errors {
+  padding: 11px 15px 11px 0;
+  color: #FFC7EE;
 }

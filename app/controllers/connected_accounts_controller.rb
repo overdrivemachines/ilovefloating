@@ -173,6 +173,7 @@ class ConnectedAccountsController < ApplicationController
       # logger.info retrieved_account
       
       connected_account.name = retrieved_account["business_profile"]["name"]
+      # connected_account.name = retrieved_account["settings"]["dashboard"]["display_name"]
       # connected_account.status = 
       # connected_account.balance =
       if (retrieved_account["business_profile"]["support_address"])
