@@ -91,6 +91,11 @@ class TransactionsController < ApplicationController
           statement_descriptor: @transaction.item[0..21],
           receipt_email: @transaction.email,
           application_fee_amount: (application_fee * 100).to_i,
+          metadata: {'name' => @transaction.name,
+                      'email' => @transaction.email,
+                      'phone' => @transaction.phone,
+                      'start_date' => @transaction.start_date,
+                      'sales_rep_name' => @transaction.sales_rep_name },
         }, stripe_account: connected_account.sid)
       rescue StandardError => e
         flash[:error] = "Error: Transaction not completed. " + e.to_s
