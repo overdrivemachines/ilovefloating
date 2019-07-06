@@ -75,7 +75,8 @@ class TransactionsController < ApplicationController
 
       # Determine the Connected Account's 
 
-      Stripe.api_key = 'sk_test_lPVHKFQDPSSLI6uiJr4dVdY7'
+      # Stripe.api_key = 'sk_test_lPVHKFQDPSSLI6uiJr4dVdY7'
+      Stripe.api_key = Rails.application.credentials.api_key
 
       charge = Stripe::Charge.create({
         amount: (@transaction.price * 100).to_i,
