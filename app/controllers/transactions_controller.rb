@@ -81,7 +81,7 @@ class TransactionsController < ApplicationController
       charge = Stripe::Charge.create({
         amount: (@transaction.price * 100).to_i,
         currency: "usd",
-        source: "tok_visa",
+        source: stripe_token,
         application_fee_amount: (application_fee * 100).to_i,
       }, stripe_account: connected_account.sid)
 
