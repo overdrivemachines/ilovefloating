@@ -11,34 +11,9 @@ class ConnectedAccountsController < ApplicationController
     # @accounts = list_of_accounts_online["data"]
   end
 
-  # GET /connected_accounts/1
-  # GET /connected_accounts/1.json
-  def show
-  end
-
-  # GET /connected_accounts/new
-  def new
-    @connected_account = ConnectedAccount.new
-  end
-
   # GET /connected_accounts/1/edit
+  # executing edit.js.erb
   def edit
-  end
-
-  # POST /connected_accounts
-  # POST /connected_accounts.json
-  def create
-    @connected_account = ConnectedAccount.new(connected_account_params)
-
-    respond_to do |format|
-      if @connected_account.save
-        format.html { redirect_to @connected_account, notice: 'Connected account was successfully created.' }
-        format.json { render :show, status: :created, location: @connected_account }
-      else
-        format.html { render :new }
-        format.json { render json: @connected_account.errors, status: :unprocessable_entity }
-      end
-    end
   end
 
   # PATCH/PUT /connected_accounts/1
