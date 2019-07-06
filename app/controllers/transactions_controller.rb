@@ -88,12 +88,12 @@ class TransactionsController < ApplicationController
           currency: "usd",
           description: 'FLOAT SPA',
           source: stripe_token,
-          statement_descriptor: @transaction.item,
+          statement_descriptor: @transaction.item[0..21],
           receipt_email: @transaction.email,
           application_fee_amount: (application_fee * 100).to_i,
         }, stripe_account: connected_account.sid)
       rescue StandardError => e
-        flash[:error] = "Error: Transaction not completed. " + e
+        flash[:error] = "Error: Transaction not completed. " + e.to_s
         render :new
         return
       end
