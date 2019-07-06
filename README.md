@@ -88,6 +88,11 @@ $ sudo certbot --nginx
 
 ## Stripe API
 - List connected accounts: https://stripe.com/docs/api/accounts/list
+- Building a Subscription Signup Form: https://stripe.com/docs/recipes/subscription-signup
+
+## Testing Webhooks
+- ngrok - https://dashboard.ngrok.com/get-started
+- ./ngrok http 3000
 
 
 
