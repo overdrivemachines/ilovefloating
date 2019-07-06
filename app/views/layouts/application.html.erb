@@ -14,10 +14,10 @@
   <body>
     <header>
       <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="#">
+        <%= link_to root_path, class: "navbar-brand" do %>
           <i class="fas fa-rocket"></i>
           Maximum Floats Dashboard
-        </a>
+        <% end %>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,7 +29,10 @@
               <!-- <a class="nav-link" href="#">Client List</a> -->
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy&scope=read_write&redirect_uri=https://dashboard.ilovefloating.com/connected_accounts/add">Add</a>
+              <a class="nav-link" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy&scope=read_write&redirect_uri=https://dashboard.ilovefloating.com/connected_accounts/add">Add Account</a>
+            </li>
+            <li class="nav-item <%= 'active' if current_page?(new_transaction_path) %>">
+              <%= link_to "New Transaction", new_transaction_path, class: "nav-link" %>
             </li>
           </ul>
           <div class="my-2 my-lg-0">
