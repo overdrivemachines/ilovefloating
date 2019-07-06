@@ -34,7 +34,8 @@ $(document).on("turbolinks:load", function() {
   });
 
   // Create a Stripe client.
-  var stripe = Stripe("pk_test_gEtbe0LdmNqijbYBOZUMe9kx");
+  // var stripe = Stripe("pk_test_gEtbe0LdmNqijbYBOZUMe9kx");
+  var stripe = Stripe("pk_live_ggQscJWE7yBEpXZDGMIVO2ku");
 
   // Create an instance of Elements.
   var elements = stripe.elements();
