@@ -17,13 +17,18 @@
 //= require_tree .
 
 $(document).on("turbolinks:load", function() {
+  // Item radio button
+  $(".form-check:first").addClass("is-selected");
+  $(".form-check:first").children("input[name='transaction[item]']:radio")
+      .eq(0)
+      .prop("checked", true);
   $(".form-check").click(function() {
     $(this).addClass("is-selected");
     $(this)
       .siblings()
       .removeClass("is-selected");
     $(this)
-      .children("input[name='exampleRadios']:radio")
+      .children("input[name='transaction[item]']:radio")
       .eq(0)
       .prop("checked", true);
   });
