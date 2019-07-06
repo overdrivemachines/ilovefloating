@@ -78,11 +78,17 @@ class TransactionsController < ApplicationController
       # Stripe.api_key = 'sk_test_lPVHKFQDPSSLI6uiJr4dVdY7'
       Stripe.api_key = Rails.application.credentials.api_key
 
+      # Testing errors:
+      # https://stripe.com/docs/testing
+      # Receipts: https://stripe.com/docs/receipts
       begin
         charge = Stripe::Charge.create({
           amount: (@transaction.price * 100).to_i,
           currency: "usd",
+          description: 'Example charge',
           source: stripe_token,
+          statement_descriptor: 'Custom descriptor',
+          receipt_email: @transaction.email,
           application_fee_amount: (application_fee * 100).to_i,
         }, stripe_account: connected_account.sid)
       rescue StandardError => e
