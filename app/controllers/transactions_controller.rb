@@ -37,7 +37,7 @@ class TransactionsController < ApplicationController
       @transaction.item = "Test"
       @transaction.price = 2.0
     elsif (transaction_params[:item] == "0")
-      @transaction.item = "6 Weeks"
+      @transaction.item = "6 Week Stress Release Program"
       @transaction.price = 447.0
     elsif (transaction_params[:item] == "1")
       @transaction.item = "Single Float"
@@ -81,13 +81,14 @@ class TransactionsController < ApplicationController
       # Testing errors:
       # https://stripe.com/docs/testing
       # Receipts: https://stripe.com/docs/receipts
+      # https://stripe.com/docs/recipes/sending-custom-email-receipts
       begin
         charge = Stripe::Charge.create({
           amount: (@transaction.price * 100).to_i,
           currency: "usd",
-          description: 'Example charge',
+          description: 'FLOAT SPA',
           source: stripe_token,
-          statement_descriptor: 'Custom descriptor',
+          statement_descriptor: @transaction.item,
           receipt_email: @transaction.email,
           application_fee_amount: (application_fee * 100).to_i,
         }, stripe_account: connected_account.sid)
