@@ -185,7 +185,7 @@ h3 {
   }
   .form-group {
     width: 100%;
-    margin: 0 15px 20px;
+    margin-bottom: 20px;
     padding: 0;
     border-style: none;
     background-color: #7795f8;
@@ -306,4 +306,11 @@ h3 {
 #card-errors {
   padding: 11px 15px 11px 0;
   color: #FFC7EE;
+}
+
+#error_explanation {
+  color: #c4f0ff;
+  h2 {
+    font-size: 1.2em;
+  }
 }
