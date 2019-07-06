@@ -37,7 +37,7 @@ class TransactionsController < ApplicationController
       @transaction.item = "Test"
       @transaction.price = 2.0
     elsif (transaction_params[:item] == "0")
-      @transaction.item = "6 Week Stress Release Program"
+      @transaction.item = "6 Week Stress Release Program (10% discount paid in full)"
       @transaction.price = 447.0
     elsif (transaction_params[:item] == "1")
       @transaction.item = "Single Float"
@@ -86,7 +86,7 @@ class TransactionsController < ApplicationController
         charge = Stripe::Charge.create({
           amount: (@transaction.price * 100).to_i,
           currency: "usd",
-          description: 'FLOAT SPA',
+          description: @transaction.item,
           source: stripe_token,
           statement_descriptor: @transaction.item[0..21],
           receipt_email: @transaction.email,
