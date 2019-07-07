@@ -74,19 +74,23 @@ class TransactionsController < ApplicationController
       customer_id = nil
       begin
         customers = Stripe::Customer.list(email: @transaction.email , limit: 1)
-        if (accounts["data"].size == 0)
+        if (customers["data"].size == 0)
           # Customer not found
           # Create a new Customer
+          puts "Creating new Customer"
           customer = Stripe::Customer.create({
             name: @transaction.name,
             email: @transaction.email,
             phone: @transaction.phone,
-            description: 'Customer for jenny.rosen@example.com',
             source: stripe_token, # obtained with Stripe.js
           })
+          customer_id = customer["id"];
+          puts "New Customer ID: " + customer_id
         else
           # Customer already exists, get the Customer ID
-          customer_id = accounts["data"][0]["id"]
+          puts "Customer already exists"
+          customer_id = customers["data"][0]["id"]
+          puts "Customer ID: " + customer_id
           # Update Name and Phone
           Stripe::Customer.update(
             customer_id,
@@ -96,9 +100,25 @@ class TransactionsController < ApplicationController
               phone: @transaction.phone,
               source: stripe_token
             })
-        end        
+          puts "Customer Updated"
+        end
       rescue StandardError => e
-        flash[:error] = "Error: Transaction not completed. " + e.to_s
+        flash[:error] = "Error: Transaction not completed. Customer update failed. " + e.to_s
+        render :new
+        return
+      end
+
+
+      # Shared Customers - https://stripe.com/docs/connect/shared-customers
+      # We need to share the customer from the platform account to the connected account
+      customer_token = nil
+      begin
+        customer_token = Stripe::Token.create({
+          :customer => customer_id,
+        }, {:stripe_account => connected_account.sid })
+        puts "New Customer Token: " + customer_token.to_s
+      rescue StandardError => e
+        flash[:error] = "Error: Transaction not completed. Customer token creation failed. " + e.to_s
         render :new
         return
       end
@@ -114,7 +134,7 @@ class TransactionsController < ApplicationController
           amount: (@transaction.price * 100).to_i,
           currency: "usd",
           description: @transaction.item,
-          source: stripe_token,
+          source: customer_token.id,
           statement_descriptor: @transaction.item[0..21],
           receipt_email: @transaction.email,
           application_fee_amount: (application_fee * 100).to_i,
