@@ -11,6 +11,11 @@ class ConnectedAccountsController < ApplicationController
     # @accounts = list_of_accounts_online["data"]
   end
 
+  # GET /connected_accounts/1
+  # executing show.js.erb
+  def show
+  end
+
   # GET /connected_accounts/1/edit
   # executing edit.js.erb
   def edit
