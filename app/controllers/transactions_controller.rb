@@ -1,9 +1,10 @@
 class TransactionsController < ApplicationController
+  skip_before_action :verify_authenticity_token, :only => [:stripe_webhooks]
 
   # GET /transactions
-  def index
-    @transactions = Transaction.all
-  end
+  # def index
+  #   @transactions = Transaction.all
+  # end
 
   # GET /transactions/new
   def new
@@ -64,7 +65,9 @@ class TransactionsController < ApplicationController
 
       # Determine the Connected Account's 
 
-      Stripe.api_key = 'sk_test_lPVHKFQDPSSLI6uiJr4dVdY7'
+      # Stripe.api_key = 'sk_test_lPVHKFQDPSSLI6uiJr4dVdY7'
+      Stripe.api_key = Rails.application.credentials.stripe[:development][:secret_key]
+      # Stripe.api_key = Rails.application.credentials.stripe[:production][:secret_key]
       # Stripe.api_key = Rails.application.credentials.api_key
 
       # Testing errors:
