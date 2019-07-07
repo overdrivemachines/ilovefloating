@@ -70,6 +70,40 @@ class TransactionsController < ApplicationController
       # Stripe.api_key = Rails.application.credentials.stripe[:production][:secret_key]
       # Stripe.api_key = Rails.application.credentials.api_key
 
+      # finding if customer exists
+      customer_id = nil
+      begin
+        customers = Stripe::Customer.list(email: @transaction.email , limit: 1)
+        if (accounts["data"].size == 0)
+          # Customer not found
+          # Create a new Customer
+          customer = Stripe::Customer.create({
+            name: @transaction.name,
+            email: @transaction.email,
+            phone: @transaction.phone,
+            description: 'Customer for jenny.rosen@example.com',
+            source: stripe_token, # obtained with Stripe.js
+          })
+        else
+          # Customer already exists, get the Customer ID
+          customer_id = accounts["data"][0]["id"]
+          # Update Name and Phone
+          Stripe::Customer.update(
+            customer_id,
+            {
+              name: @transaction.name,
+              email: @transaction.email,
+              phone: @transaction.phone,
+              source: stripe_token
+            })
+        end        
+      rescue StandardError => e
+        flash[:error] = "Error: Transaction not completed. " + e.to_s
+        render :new
+        return
+      end
+
+
       # Testing errors:
       # https://stripe.com/docs/testing
       # Receipts: https://stripe.com/docs/receipts
@@ -84,6 +118,7 @@ class TransactionsController < ApplicationController
           statement_descriptor: @transaction.item[0..21],
           receipt_email: @transaction.email,
           application_fee_amount: (application_fee * 100).to_i,
+          customer: customer_id,
           metadata: {'name' => @transaction.name,
                       'email' => @transaction.email,
                       'phone' => @transaction.phone,
