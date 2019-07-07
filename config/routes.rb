@@ -1,25 +1,16 @@
 # == Route Map
 #
 #                     Prefix Verb   URI Pattern                                                                              Controller#Action
-#               transactions GET    /transactions(.:format)                                                                  transactions#index
-#                            POST   /transactions(.:format)                                                                  transactions#create
+#               transactions POST   /transactions(.:format)                                                                  transactions#create
 #            new_transaction GET    /transactions/new(.:format)                                                              transactions#new
-#           edit_transaction GET    /transactions/:id/edit(.:format)                                                         transactions#edit
-#                transaction GET    /transactions/:id(.:format)                                                              transactions#show
-#                            PATCH  /transactions/:id(.:format)                                                              transactions#update
+#                transaction PATCH  /transactions/:id(.:format)                                                              transactions#update
 #                            PUT    /transactions/:id(.:format)                                                              transactions#update
-#                            DELETE /transactions/:id(.:format)                                                              transactions#destroy
-#                 home_index GET    /home/index(.:format)                                                                    home#index
-#                 home_check GET    /home/check(.:format)                                                                    home#check
-#               home_results GET    /home/results(.:format)                                                                  home#results
 # connected_accounts_refresh GET    /connected_accounts/refresh(.:format)                                                    connected_accounts#refresh
 #     connected_accounts_add GET    /connected_accounts/add(.:format)                                                        connected_accounts#add
 #         connected_accounts GET    /connected_accounts(.:format)                                                            connected_accounts#index
 #                            POST   /connected_accounts(.:format)                                                            connected_accounts#create
-#      new_connected_account GET    /connected_accounts/new(.:format)                                                        connected_accounts#new
 #     edit_connected_account GET    /connected_accounts/:id/edit(.:format)                                                   connected_accounts#edit
-#          connected_account GET    /connected_accounts/:id(.:format)                                                        connected_accounts#show
-#                            PATCH  /connected_accounts/:id(.:format)                                                        connected_accounts#update
+#          connected_account PATCH  /connected_accounts/:id(.:format)                                                        connected_accounts#update
 #                            PUT    /connected_accounts/:id(.:format)                                                        connected_accounts#update
 #                            DELETE /connected_accounts/:id(.:format)                                                        connected_accounts#destroy
 #           new_user_session GET    /users/sign_in(.:format)                                                                 devise/sessions#new
@@ -45,14 +36,14 @@
 #       rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create
 
 Rails.application.routes.draw do
-  resources :transactions
-  get 'home/index'
-  get 'home/check'
-  get 'home/results'
+  resources :transactions, except: [:show, :edit, :index, :destroy, :update]
+  # post 'transactions/stripe_webhooks'
   get 'connected_accounts/refresh'
   get 'connected_accounts/add'
-  resources :connected_accounts
+  resources :connected_accounts, except: [:show, :new]
   devise_for :users
+
+  mount StripeEvent::Engine, at: '/stripe_webhooks'
 
   root 'connected_accounts#index'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

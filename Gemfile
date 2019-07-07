@@ -72,7 +72,7 @@ gem 'devise'
 
 # https://github.com/stripe/stripe-ruby
 gem 'stripe'
+# https://github.com/integrallis/stripe_event
+gem 'stripe_event'
 
 gem 'record_tag_helper', '~> 1.0'
-
-gem 'jquery-rails'

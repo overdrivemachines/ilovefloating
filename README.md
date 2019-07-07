@@ -94,6 +94,9 @@ $ sudo certbot --nginx
 - ngrok - https://dashboard.ngrok.com/get-started
 - ./ngrok http 3000
 
+## Handling Webhooks
+- https://dev.to/maxencehenneron/handling-stripe-webhooks-with-ruby-on-rails-4bb7
+
 
 
 Things you may want to cover:

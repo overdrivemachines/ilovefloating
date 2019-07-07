@@ -22,7 +22,7 @@
 #
 
 class ConnectedAccount < ApplicationRecord
-  has_many :transactions
+  has_many :transactions, dependent: :destroy
   validates :sid, presence: true
 
   
