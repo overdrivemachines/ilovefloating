@@ -74,14 +74,27 @@ class TransactionsController < ApplicationController
       # Stripe.api_key = Rails.application.credentials.stripe[:production][:secret_key]
       # Stripe.api_key = Rails.application.credentials.api_key
 
-      # finding if customer exists
+      # finding if customer exists in connected account
       customer_id = nil
       begin
-        customers = Stripe::Customer.list(email: @transaction.email , limit: 1)
+        # customers = Stripe::Customer.list({
+        #     email: @transaction.email,
+        #     limit: 1
+        # }, stripe_account: connected_account.sid)
+        customers = Stripe::Customer.list({
+            email: @transaction.email,
+            limit: 1
+        })
         if (customers["data"].size == 0)
           # Customer not found
           # Create a new Customer
           puts "Creating new Customer"
+          # customer = Stripe::Customer.create({
+          #   name: @transaction.name,
+          #   email: @transaction.email,
+          #   phone: @transaction.phone,
+          #   source: stripe_token, # obtained with Stripe.js
+          # }, stripe_account: connected_account.sid)
           customer = Stripe::Customer.create({
             name: @transaction.name,
             email: @transaction.email,
@@ -96,6 +109,14 @@ class TransactionsController < ApplicationController
           customer_id = customers["data"][0]["id"]
           puts "Customer ID: " + customer_id
           # Update Name and Phone
+          # Stripe::Customer.update(
+          #   customer_id,
+          #   {
+          #     name: @transaction.name,
+          #     email: @transaction.email,
+          #     phone: @transaction.phone,
+          #     source: stripe_token # obtained with Stripe.js
+          #   }, stripe_account: connected_account.sid)
           Stripe::Customer.update(
             customer_id,
             {
@@ -115,22 +136,37 @@ class TransactionsController < ApplicationController
 
       # Shared Customers - https://stripe.com/docs/connect/shared-customers
       # We need to share the customer from the platform account to the connected account
+      # Making tokens
+      # If the customer is stored on the platform account and the charge is on the
+      # connected account, a new token needs to be created
       customer_token = nil
-      begin
-        customer_token = Stripe::Token.create({
-          :customer => customer_id,
-        }, {:stripe_account => connected_account.sid })
-        puts "New Customer Token: " + customer_token.id
-      rescue StandardError => e
-        flash[:error] = "Error: Transaction not completed. Customer token creation failed. " + e.to_s
-        render :new
-        return
-      end
+      if (!is_subscription)
+        begin
+          customer_token = Stripe::Token.create({
+            :customer => customer_id,
+          }, {:stripe_account => connected_account.sid })
+          puts "New Customer Token: " + customer_token.id
+        rescue StandardError => e
+          flash[:error] = "Error: Transaction not completed. Customer token creation failed. " + e.to_s
+          render :new
+          return
+        end
+      else
 
-      # Signing up the customer for the installment plan
-      # Do this only if the customer has selected option (2)
-      # Customer is automatically charged
-      if (is_subscription)
+        # # Save the customer on the connected account
+        # # https://stripe.com/docs/connect/shared-customers#making-a-charge
+        # shared_customer = Stripe::Customer.create({
+        #     name: @transaction.name,
+        #     email: @transaction.email,
+        #     phone: @transaction.phone,
+        #     description: 'Shared Customer',
+        #     source: customer_token.id,
+        # }, stripe_account: connected_account.sid)
+        # puts "New Customer on Connected Account: " + shared_customer.id
+
+        # Signing up the customer for the installment plan
+        # Do this only if the customer has selected option (2)
+        # Customer is automatically charged
         begin
           subscription = Stripe::Subscription.create({
               customer: customer_id,
@@ -141,20 +177,18 @@ class TransactionsController < ApplicationController
               metadata: {
                   installments_paid: 0,
               },
-          })
+          }, stripe_account: connected_account.sid )
           puts "Subscription: " + subscription.to_s
           @transaction.charge_id = subscription["id"]
           @transaction.save
           redirect_to connected_accounts_url, flash: { success: "Transaction completed successfully. Subscription ID: #{subscription["id"]}. Amount: $#{@transaction.price}. Stripe Fees: $#{stripe_fee}. Application Fee: $#{application_fee}"}
           return
         rescue StandardError => e
-          flash[:error] = "Error: Transaction not completed. Charge failed. " + e.to_s
+          flash[:error] = "Error: Transaction not completed. Subscription failed. " + e.to_s
           render :new
           return
         end
       end
-
-      asdf
       
       # Charge the customer
       # Testing errors:
@@ -167,17 +201,20 @@ class TransactionsController < ApplicationController
           amount: (@transaction.price * 100).to_i,
           currency: "usd",
           description: @transaction.item,
-          # source: customer_token.id,
+          source: customer_token.id,
           statement_descriptor: @transaction.item[0..21],
           receipt_email: @transaction.email,
           application_fee_amount: (application_fee * 100).to_i,
-          customer: customer_id,
+          # customer: shared_customer.id,
           metadata: {'name' => @transaction.name,
                       'email' => @transaction.email,
                       'phone' => @transaction.phone,
                       'start_date' => @transaction.start_date,
-                      'sales_rep_name' => @transaction.sales_rep_name },
+                      'sales_rep_name' => @transaction.sales_rep_name,
+                      'platform_customer_id' => customer_id},
         }, stripe_account: connected_account.sid)
+
+        puts "***Charge ID: " + charge.id
       rescue StandardError => e
         flash[:error] = "Error: Transaction not completed. Charge failed. " + e.to_s
         render :new
