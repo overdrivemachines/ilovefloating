@@ -69,7 +69,7 @@ class TransactionsController < ApplicationController
         stripe_token,
         connected_account.sid)
 
-      if is_subscription
+      if (is_subscription)
         # Check or Create Product
         # Check or Create Plan
         plan_id = check_or_create_plan(connected_account.sid)
@@ -243,13 +243,83 @@ class TransactionsController < ApplicationController
     return af
   end
 
-  def direct_charge
+  def check_or_create_product(sid)
+    # List the products in the Connected Account
+    products = Stripe::Product.list({limit: 10, type: "service"}, stripe_account: sid)
+    product = nil
+    if (products["data"].size != 0)
+      # iterate through products
+      products["data"].each do |p|
+        if ((p["metadata"]["code"] == Digest::SHA1.hexdigest(p.id)) && (p["type"] == "service"))
+          # Product found
+          # Update the name in case someone changed it
+          product = Stripe::Product.update(
+            p.id,
+            {
+              name: '6 Week Stress Release Payment Plan',
+            }, stripe_account: sid)
+          break
+        end
+      end
+    end
+    if (product.nil?)
+      # Create a New Product
+      product = Stripe::Product.create({
+        name: '6 Week Stress Release Payment Plan',
+        type: 'service',
+      }, stripe_account: sid)
+      # Update New Product's metadata
+      product = Stripe::Product.update(
+        product.id,
+        {
+          metadata: {code: Digest::SHA1.hexdigest(product.id), source: "RoR"},
+        }, stripe_account: sid)
+    end
+
+    return product.id    
   end
 
-  def destination_charge
+  def check_or_create_plan(sid)
+    product_id = check_or_create_product(sid)
+    # List the Plans
+    plans = Stripe::Plan.list({limit: 10, product: product_id}, stripe_account: sid)
+    plan = nil
+    if (plans["data"].size != 0)
+      # iterate through products
+      plans["data"].each do |p|
+        if ((p["metadata"]["code"] == Digest::SHA1.hexdigest(p.id)) && 
+          (p["interval"] == "week") &&
+          (p["amount"] == "8300"))
+          # Product found
+          # Update the name in case someone changed it
+          plan = Stripe::Plan.update(
+            p.id,
+            {
+              nickname: 'Weekly',
+            }, stripe_account: sid)
+          break
+        end
+      end
+    end
+    if (plan.nil?)
+      # Create a New Plan
+      plan = Stripe::Plan.create({
+        amount: 8300,
+        interval: 'week',
+        product: product_id,
+        nickname: 'Weekly',
+        currency: 'usd',
+      }, stripe_account: sid)
+      # Update New Plan's metadata
+      plan = Stripe::Plan.update(
+        plan.id,
+        {
+          metadata: {code: Digest::SHA1.hexdigest(plan.id), source: "RoR"},
+        }, stripe_account: sid)
+    end
+
+    return plan.id    
   end
-
-
 
     # Never trust parameters from the scary internet, only allow the white list through.
   def transaction_params
