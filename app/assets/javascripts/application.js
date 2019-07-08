@@ -84,7 +84,6 @@ $(document).on("turbolinks:load", function() {
         stripeTokenHandler(result.token);
       }
     });
-    setTimeout(enableSubmitButton(), 5000);
   });
 
   function enableSubmitButton() {
