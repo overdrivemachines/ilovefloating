@@ -165,7 +165,7 @@ class ConnectedAccountsController < ApplicationController
       connected_account.dashboard_display_name = retrieved_account["settings"]["dashboard"]["display_name"]
 
       if connected_account.save
-        redirect_to connected_accounts_url, flash: { success: "Strip Account " + connected_account.dashboard_display_name + " added."} 
+        redirect_to connected_accounts_url, flash: { success: "Stripe Account " + connected_account.dashboard_display_name + " added."} 
       else
         redirect_to connected_accounts_url, flash: { error: connected_account.errors } 
       end
