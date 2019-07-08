@@ -3,8 +3,7 @@
 #                     Prefix Verb   URI Pattern                                                                              Controller#Action
 #               transactions POST   /transactions(.:format)                                                                  transactions#create
 #            new_transaction GET    /transactions/new(.:format)                                                              transactions#new
-#                transaction PATCH  /transactions/:id(.:format)                                                              transactions#update
-#                            PUT    /transactions/:id(.:format)                                                              transactions#update
+#                transaction GET    /transactions/:id(.:format)                                                              transactions#show
 # connected_accounts_refresh GET    /connected_accounts/refresh(.:format)                                                    connected_accounts#refresh
 #     connected_accounts_add GET    /connected_accounts/add(.:format)                                                        connected_accounts#add
 #         connected_accounts GET    /connected_accounts(.:format)                                                            connected_accounts#index
@@ -28,15 +27,19 @@
 #                            PUT    /users(.:format)                                                                         devise/registrations#update
 #                            DELETE /users(.:format)                                                                         devise/registrations#destroy
 #                            POST   /users(.:format)                                                                         devise/registrations#create
+#               stripe_event        /stripe_webhooks                                                                         StripeEvent::Engine
 #                       root GET    /                                                                                        connected_accounts#index
 #         rails_service_blob GET    /rails/active_storage/blobs/:signed_id/*filename(.:format)                               active_storage/blobs#show
 #  rails_blob_representation GET    /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations#show
 #         rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
 #  update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                      active_storage/disk#update
 #       rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create
+# 
+# Routes for StripeEvent::Engine:
+#   root POST /           stripe_event/webhook#event
 
 Rails.application.routes.draw do
-  resources :transactions, except: [:show, :edit, :index, :destroy, :update]
+  resources :transactions, except: [:edit, :index, :destroy, :update]
   # post 'transactions/stripe_webhooks'
   get 'connected_accounts/refresh'
   get 'connected_accounts/add'
