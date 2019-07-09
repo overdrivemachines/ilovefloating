@@ -73,6 +73,31 @@ class TransactionsController < ApplicationController
         # Check or Create Product
         # Check or Create Plan
         plan_id = check_or_create_plan(connected_account.sid)
+        puts "Plan ID: " + plan_id
+
+        begin
+          subscription = Stripe::Subscription.create({
+              customer: customer_id,
+              items: [{
+                  plan: plan_id,
+              }],
+              application_fee_percent: connected_account.commission,
+              metadata: {
+                  installments_paid: 0,
+                  source: "RoR"
+              },
+          }, stripe_account: connected_account.sid )
+          puts "Subscription ID: " + subscription.id
+          @transaction.charge_id = subscription["id"]
+          @transaction.save
+          redirect_to connected_accounts_url, flash: { success: "Transaction completed successfully. Subscription ID: #{subscription["id"]}. Amount: $#{@transaction.price}."}
+          return
+        rescue StandardError => e
+          flash[:error] = "Error: Transaction not completed. Subscription failed. " + e.to_s
+          render :new
+          return
+        end
+
       else
         stripe_fee = calculate_stripe_fee(@transaction.price)
         application_fee = calculate_application_fee(@transaction.price, connected_account.commission)
