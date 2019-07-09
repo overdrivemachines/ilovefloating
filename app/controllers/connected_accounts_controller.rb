@@ -40,7 +40,7 @@ class ConnectedAccountsController < ApplicationController
   # DELETE /connected_accounts/1
   # DELETE /connected_accounts/1.json
   def destroy
-    Stripe.api_key = Rails.application.credentials.api_key
+    Stripe.api_key = Rails.application.credentials.stripe[Rails.env.to_sym][:secret_key]
     acct = Stripe::Account.retrieve(@connected_account.sid)
     acct.deauthorize('ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy')
     @connected_account.destroy
@@ -114,7 +114,7 @@ class ConnectedAccountsController < ApplicationController
 
       uri = URI('https://connect.stripe.com/oauth/token')
       res = Net::HTTP.post_form(uri, 
-        'client_secret' => Rails.application.credentials.api_key, 
+        'client_secret' => Rails.application.credentials.stripe[Rails.env.to_sym][:secret_key], 
         'code' => stripe_params[:code], 
         'grant_type' => 'authorization_code')
 
@@ -147,7 +147,7 @@ class ConnectedAccountsController < ApplicationController
       connected_account.access_token = @result["access_token"]
       connected_account.connected = Date.today
 
-      Stripe.api_key = Rails.application.credentials.api_key
+      Stripe.api_key = Rails.application.credentials.stripe[Rails.env.to_sym][:secret_key]
       retrieved_account = Stripe::Account.retrieve(@result["stripe_user_id"])
       # logger.info "Result from Stripe:"
       # logger.info retrieved_account
@@ -190,7 +190,7 @@ class ConnectedAccountsController < ApplicationController
     # Retrieving all connected accounts
     # https://stripe.com/docs/api/accounts/list?lang=curl
     def list_of_accounts_online
-      Stripe.api_key = Rails.application.credentials.api_key
+      Stripe.api_key = Rails.application.credentials.stripe[Rails.env.to_sym][:secret_key]
       return Stripe::Account.list
     end
 end
