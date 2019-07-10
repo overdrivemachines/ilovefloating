@@ -13,12 +13,10 @@ module Stripe
     end
 
     def handle_invoice_payment_failed(event)
-      puts "***handle_invoice_payment_failed executing"
     end
 
     # Execute only for `invoice.payment_succeeded` events.
     def handle_invoice_payment_succeeded(event)
-      puts "****handle_invoice_payment_succeeded executing"
       # TODO: logging
       # logger.info "handle_invoice_payment_succeeded executing"
       # logger.info "EVENT:#{event.type}:#{event.id}"
@@ -34,9 +32,11 @@ module Stripe
         # Grab the subscription line item.
         sub =  event.data.object.lines.data[0]
 
-        puts "***event.data.object.lines.data[0]: " + sub.to_s
-
-        return
+        # puts "ID: " + sub["id"].to_s
+        # puts "Description: " + sub["description"].to_s
+        # puts "Account ID: " + sub["account"].to_s
+        # puts "installments_paid: " + sub["metadata"]["installments_paid"].to_s
+        # puts "Subscription: " + sub["subscription"].to_s
 
         # Execute only for installment plans.
         if !sub.metadata[:installments_paid].nil?
@@ -48,21 +48,21 @@ module Stripe
           # Retrieve and increment the number of payments.
           count = sub.metadata[:installments_paid].to_i
           count += 1
+          
           # Metadata is not write-protected; creating a database is an alternative.
 
-          puts "New Installment: " + count.to_s
           # Save incremented value to `installments_paid` metadata of the subscription.
           
           # begin
           subscription_object = Stripe::Subscription.update( 
-            sub["subscription"]["id"], {
+             sub["subscription"], {
               metadata: {
                   installments_paid: count,
                   source: "RoR"
               },
             }, stripe_account: event["account"] )
 
-          puts "Subscription " + sub["subscription"]["id"] + " updated. Count: " + count
+          # puts "New Installments paid " + subscription_object["metadata"]["installments_paid"].to_s
 
           # Check if all 10 installments have been paid.
           # If paid in full, then cancel the subscription.
