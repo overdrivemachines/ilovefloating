@@ -18,25 +18,25 @@ module Stripe
     # Execute only for `invoice.payment_succeeded` events.
     def handle_invoice_payment_succeeded(event)
       # TODO: logging
-      # logger.info "handle_invoice_payment_succeeded executing"
-      # logger.info "EVENT:#{event.type}:#{event.id}"
+      e_logger = Logger.new('log/event.log', 10, 1024000)
+      # e_logger.info "handle_invoice_payment_succeeded executing"
+      # e_logger.info "EVENT:#{event.type}: #{event.id}"
+      e_logger.info "================================"
+      e_logger.info "NEW EVENT: #{event.id}"
+      e_logger.info "================================"
       
       # Increment payments count
 
       # https://stripe.com/docs/recipes/installment-plan
       # https://stripe.com/docs/webhooks/setup
       
-      puts "Livemode: " + event["livemode"].to_s
-
-      if (event["livemode"] == false)
+      if (event["livemode"] == true) || (Rails.env == "development")
         # Grab the subscription line item.
         sub =  event.data.object.lines.data[0]
 
-        # puts "ID: " + sub["id"].to_s
-        # puts "Description: " + sub["description"].to_s
-        # puts "Account ID: " + sub["account"].to_s
-        # puts "installments_paid: " + sub["metadata"]["installments_paid"].to_s
-        # puts "Subscription: " + sub["subscription"].to_s
+        e_logger.info "Account ID: " + event["account"].to_s
+        e_logger.info "Subscription ID: " + sub["id"].to_s
+        e_logger.info "Installments_paid: " + sub["metadata"]["installments_paid"].to_s
 
         # Execute only for installment plans.
         if !sub.metadata[:installments_paid].nil?
@@ -53,27 +53,28 @@ module Stripe
 
           # Save incremented value to `installments_paid` metadata of the subscription.
           
-          # begin
-          subscription_object = Stripe::Subscription.update( 
-             sub["subscription"], {
-              metadata: {
-                  installments_paid: count,
-                  source: "RoR"
-              },
-            }, stripe_account: event["account"] )
-
-          # puts "New Installments paid " + subscription_object["metadata"]["installments_paid"].to_s
-
+          subscription_object = nil
+          begin
+            subscription_object = Stripe::Subscription.update(sub["subscription"], { metadata: { installments_paid: count, source: "RoR" }, }, stripe_account: event["account"] )
+          rescue StandardError => e
+            e_logger.error e
+            return
+          end
           # Check if all 10 installments have been paid.
           # If paid in full, then cancel the subscription.
-          if count >= 6
-              subscription_object.delete
+          if (subscription_object.nil?)
+            e_logger.error "Subscription Object is nil. Subscription cannot be updated"
+          else
+            e_logger.info "Subscription Updated Successfully"
+            if count >= 6
+                subscription_object.delete
+            end
           end
+
           # rescue StandardError => e
-          #   render json: {:status => 400, :error => e}
+          #   e_logger.error e
           #   return
           # end
-          
         end
       end
       # puts event.data.object.class
