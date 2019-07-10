@@ -29,7 +29,7 @@
               <!-- <a class="nav-link" href="#">Client List</a> -->
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy&scope=read_write&redirect_uri=https://dashboard.ilovefloating.com/connected_accounts/add">Add Account</a>
+              <a class="nav-link" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=<%= Rails.application.credentials.stripe[Rails.env.to_sym][:client_id] %>&scope=read_write">Add Account</a>
             </li>
             <li class="nav-item <%= 'active' if current_page?(new_transaction_path) %>">
               <%= link_to "New Transaction", new_transaction_path, class: "nav-link" %>

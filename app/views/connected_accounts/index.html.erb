@@ -13,7 +13,7 @@
           <% end %>
           <div class="p-1"></div>
           <p>In order to add a sub account, click on the button below:</p>
-          <a class="btn btn-primary" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy&scope=read_write&redirect_uri=https://dashboard.ilovefloating.com/connected_accounts/add" role="button"><i class="fab fa-stripe-s"></i> Connect with Stripe</a>
+          <a class="btn btn-primary" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=<%= Rails.application.credentials.stripe[Rails.env.to_sym][:client_id] %>&scope=read_write" role="button"><i class="fab fa-stripe-s"></i> Connect with Stripe</a>
         </div>
       </div>
     </div>
