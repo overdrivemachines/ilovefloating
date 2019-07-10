@@ -20,6 +20,7 @@ class TransactionsController < ApplicationController
   # POST /transactions
   def create
     @transaction = Transaction.new(transaction_params)
+    @redirect = false
     is_subscription = false
     # Determining item name and price
     # TODO: move items to a table
@@ -47,8 +48,7 @@ class TransactionsController < ApplicationController
       connected_account = ConnectedAccount.find_by(id: transaction_params[:connected_account_id])
       if (connected_account.nil?)
         flash[:error] = "Connect Account #{transaction_params[:connected_account_id]} not found."
-        render :new
-        return
+        redirect_to new_transaction_url and return
       end
 
       # Retreive the stripe token
@@ -68,12 +68,17 @@ class TransactionsController < ApplicationController
         @transaction.sales_rep_name,
         stripe_token,
         connected_account.sid)
+      if (@redirect)
+        return
+      end
 
       if (is_subscription)
         # Check or Create Product
         # Check or Create Plan
         plan_id = check_or_create_plan(connected_account.sid)
-        puts "Plan ID: " + plan_id
+        if (@redirect)
+          return
+        end
 
         begin
           subscription = Stripe::Subscription.create({
@@ -94,8 +99,7 @@ class TransactionsController < ApplicationController
           return
         rescue StandardError => e
           flash[:error] = "Error: Transaction not completed. Subscription failed. " + e.to_s
-          render :new
-          return
+          redirect_to new_transaction_url and return
         end
 
       else
@@ -108,6 +112,7 @@ class TransactionsController < ApplicationController
         # Receipts: https://stripe.com/docs/receipts
         # https://stripe.com/docs/recipes/sending-custom-email-receipts
         # Metadata: https://stripe.com/docs/charges
+        redirect = false
         begin
           charge = Stripe::Charge.create({
             amount: (@transaction.price * 100).to_i,
@@ -129,45 +134,14 @@ class TransactionsController < ApplicationController
           puts "***Charge ID: " + charge.id
         rescue StandardError => e
           flash[:error] = "Error: Transaction not completed. Charge failed. " + e.to_s
-          render :new
-          return
+          redirect = true
+        end
+
+        if redirect
+          redirect_to new_transaction_url and return
         end
       end
 
-
-      # Shared Customers - https://stripe.com/docs/connect/shared-customers
-      # We need to share the customer from the platform account to the connected account
-      # Making tokens
-      # If the customer is stored on the platform account and the charge is on the
-      # connected account, a new token needs to be created
-      # customer_token = nil
-      # if (!is_subscription)
-      #   begin
-      #     customer_token = Stripe::Token.create({
-      #       :customer => customer_id,
-      #     }, {:stripe_account => connected_account.sid })
-      #     puts "New Customer Token: " + customer_token.id
-      #   rescue StandardError => e
-      #     flash[:error] = "Error: Transaction not completed. Customer token creation failed. " + e.to_s
-      #     render :new
-      #     return
-      #   end
-      # else
-
-        # # Save the customer on the connected account
-        # # https://stripe.com/docs/connect/shared-customers#making-a-charge
-        # shared_customer = Stripe::Customer.create({
-        #     name: @transaction.name,
-        #     email: @transaction.email,
-        #     phone: @transaction.phone,
-        #     description: 'Shared Customer',
-        #     source: customer_token.id,
-        # }, stripe_account: connected_account.sid)
-        # puts "New Customer on Connected Account: " + shared_customer.id
-
-        # Signing up the customer for the installment plan
-        # Do this only if the customer has selected option (2)
-        # Customer is automatically charged
       if (is_subscription)
         # TODO: setup a Product and a Plan
         begin
@@ -188,20 +162,16 @@ class TransactionsController < ApplicationController
           return
         rescue StandardError => e
           flash[:error] = "Error: Transaction not completed. Subscription failed. " + e.to_s
-          render :new
-          return
+          redirect_to new_transaction_url and return
         end
       end
-      
-      
 
       @transaction.charge_id = charge["id"]
       @transaction.save
       redirect_to connected_accounts_url, flash: { success: "Transaction completed successfully. ID: #{charge["id"]}. Amount: $#{@transaction.price}. Stripe Fees: $#{stripe_fee}. Application Fee: $#{application_fee}"}
       return
     else
-      render :new
-      return
+      redirect_to new_transaction_url and return
     end   
   end
 
@@ -246,9 +216,9 @@ class TransactionsController < ApplicationController
         puts "Customer Updated"
       end
     rescue StandardError => e
+      @redirect = true
       flash[:error] = "Error: Transaction not completed. Customer update failed. " + e.to_s
-      render :new
-      return
+      redirect_to new_transaction_url and return
     end
     return customer_id
   end
@@ -261,8 +231,7 @@ class TransactionsController < ApplicationController
     # Determine the Application Fee amount
     client_received = price - calculate_stripe_fee(price)
     if (client_received <= 0)
-      redirect_to connected_accounts_url, flash: { error: "Client made negative amount so no Application Fee received."}
-      return
+      return 0
     end
     af = ((commission / 100.0) * client_received).round(2)
     return af
@@ -270,80 +239,96 @@ class TransactionsController < ApplicationController
 
   def check_or_create_product(sid)
     # List the products in the Connected Account
-    products = Stripe::Product.list({limit: 10, type: "service"}, stripe_account: sid)
-    product = nil
-    if (products["data"].size != 0)
-      # iterate through products
-      products["data"].each do |p|
-        if ((p["metadata"]["code"] == Digest::SHA1.hexdigest(p.id)) && (p["type"] == "service"))
-          # Product found
-          # Update the name in case someone changed it
-          product = Stripe::Product.update(
-            p.id,
-            {
-              name: '6 Week Stress Release Payment Plan',
-            }, stripe_account: sid)
-          break
+
+    begin
+      products = Stripe::Product.list({limit: 20, type: "service"}, stripe_account: sid)
+      product = nil
+      if (products["data"].size != 0)
+        # iterate through products
+        products["data"].each do |p|
+          if ((p["metadata"]["code"] == Digest::SHA1.hexdigest(p.id)) && (p["type"] == "service"))
+            # Product found
+            # Update the name in case someone changed it
+            product = Stripe::Product.update(
+              p.id,
+              {
+                name: '6 Week Stress Release Payment Plan',
+              }, stripe_account: sid)
+            break
+          end
         end
       end
-    end
-    if (product.nil?)
-      # Create a New Product
-      product = Stripe::Product.create({
-        name: '6 Week Stress Release Payment Plan',
-        type: 'service',
-      }, stripe_account: sid)
-      # Update New Product's metadata
-      product = Stripe::Product.update(
-        product.id,
-        {
-          metadata: {code: Digest::SHA1.hexdigest(product.id), source: "RoR"},
+      if (product.nil?)
+        # Create a New Product
+        product = Stripe::Product.create({
+          name: '6 Week Stress Release Payment Plan',
+          type: 'service',
         }, stripe_account: sid)
-    end
+        # Update New Product's metadata
+        product = Stripe::Product.update(
+          product.id,
+          {
+            metadata: {code: Digest::SHA1.hexdigest(product.id), source: "RoR"},
+          }, stripe_account: sid)
+      end
 
-    return product.id    
+      return product.id
+    rescue StandardError => e
+      @redirect = true
+      flash[:error] = "Error: Transaction not completed. Create/Update Product failed. " + e.to_s
+      redirect_to new_transaction_url and return
+    end 
   end
 
   def check_or_create_plan(sid)
-    product_id = check_or_create_product(sid)
-    # List the Plans
-    plans = Stripe::Plan.list({limit: 10, product: product_id}, stripe_account: sid)
-    plan = nil
-    if (plans["data"].size != 0)
-      # iterate through products
-      plans["data"].each do |p|
-        if ((p["metadata"]["code"] == Digest::SHA1.hexdigest(p.id)) && 
-          (p["interval"] == "week") &&
-          (p["amount"] == "8300"))
-          # Product found
-          # Update the name in case someone changed it
-          plan = Stripe::Plan.update(
-            p.id,
-            {
-              nickname: 'Weekly',
-            }, stripe_account: sid)
-          break
+    begin
+      product_id = check_or_create_product(sid)
+      if (@redirect)
+        return
+      end
+      # List the Plans
+      plans = Stripe::Plan.list({limit: 10, product: product_id}, stripe_account: sid)
+      plan = nil
+      if (plans["data"].size != 0)
+        # iterate through plans
+        plans["data"].each do |p|
+          if ((p["metadata"]["code"] == Digest::SHA1.hexdigest(p.id)) && 
+            (p["interval"] == "week") &&
+            (p["amount"] == "8300"))
+            # Product found
+            # Update the name in case someone changed it
+            plan = Stripe::Plan.update(
+              p.id,
+              {
+                nickname: 'Weekly',
+              }, stripe_account: sid)
+            break
+          end
         end
       end
-    end
-    if (plan.nil?)
-      # Create a New Plan
-      plan = Stripe::Plan.create({
-        amount: 8300,
-        interval: 'week',
-        product: product_id,
-        nickname: 'Weekly',
-        currency: 'usd',
-      }, stripe_account: sid)
-      # Update New Plan's metadata
-      plan = Stripe::Plan.update(
-        plan.id,
-        {
-          metadata: {code: Digest::SHA1.hexdigest(plan.id), source: "RoR"},
+      if (plan.nil?)
+        # Create a New Plan
+        plan = Stripe::Plan.create({
+          amount: 8300,
+          interval: 'week',
+          product: product_id,
+          nickname: 'Weekly',
+          currency: 'usd',
         }, stripe_account: sid)
-    end
+        # Update New Plan's metadata
+        plan = Stripe::Plan.update(
+          plan.id,
+          {
+            metadata: {code: Digest::SHA1.hexdigest(plan.id), source: "RoR"},
+          }, stripe_account: sid)
+      end
 
-    return plan.id    
+      return plan.id
+    rescue StandardError => e
+      @redirect = true
+      flash[:error] = "Error: Transaction not completed. Create/Update Plan failed. " + e.to_s
+      redirect_to new_transaction_url and return
+    end 
   end
 
     # Never trust parameters from the scary internet, only allow the white list through.
