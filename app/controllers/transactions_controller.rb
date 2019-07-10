@@ -197,6 +197,7 @@ class TransactionsController < ApplicationController
           name: name,
           email: email,
           phone: phone,
+          metadata: {sales_rep_name: sales_rep_name},
           source: stripe_token, # obtained with Stripe.js
         }, stripe_account: sid)
         customer_id = customer["id"];
@@ -210,6 +211,7 @@ class TransactionsController < ApplicationController
             name: name,
             email: email,
             phone: phone,
+            metadata: {sales_rep_name: sales_rep_name},
             source: stripe_token # obtained with Stripe.js
           }, stripe_account: sid)
       end
