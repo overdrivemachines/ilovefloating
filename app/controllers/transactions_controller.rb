@@ -173,7 +173,8 @@ class TransactionsController < ApplicationController
       redirect_to connected_accounts_url, flash: { success: "Transaction completed successfully. ID: #{charge["id"]}. Amount: $#{@transaction.price}. Stripe Fees: $#{stripe_fee}. Application Fee: $#{application_fee}"}
       return
     else
-      redirect_to new_transaction_url and return
+      # redirect_to new_transaction_url, flash: { error: @transaction.errors }
+      render :new, flash: {error: "Transaction Error"}
     end   
   end
 
