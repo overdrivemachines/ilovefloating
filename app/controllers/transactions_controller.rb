@@ -291,7 +291,7 @@ class TransactionsController < ApplicationController
         plans["data"].each do |p|
           if ((p["metadata"]["code"] == Digest::SHA1.hexdigest(p.id)) && 
             (p["interval"] == "week") &&
-            (p["amount"] == (@transaction.price * 100).to_i)
+            (p["amount"] == (@transaction.price * 100).to_i))
             # Product found
             # Update the name in case someone changed it
             plan = Stripe::Plan.update(
