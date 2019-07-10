@@ -10,10 +10,10 @@ class TransactionsController < ApplicationController
   def new
     @transaction = Transaction.new
     # Temp Data
-    @transaction.name = "Dipen Chauhan"
-    @transaction.email = "get.dipen@gmail.com"
-    @transaction.phone = "(530)566-3038"
-    @transaction.sales_rep_name = "John Smith"
+    # @transaction.name = "Dipen Chauhan"
+    # @transaction.email = "get.dipen@gmail.com"
+    # @transaction.phone = "(530)566-3038"
+    # @transaction.sales_rep_name = "John Smith"
 
   end
 
