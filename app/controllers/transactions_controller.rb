@@ -29,13 +29,13 @@ class TransactionsController < ApplicationController
       @transaction.price = 2.0
     elsif (transaction_params[:item] == "0")
       @transaction.item = "6 Week Stress Release Program (10% discount paid in full)"
-      @transaction.price = 447.0
+      @transaction.price = 375.0
     elsif (transaction_params[:item] == "1")
       @transaction.item = "60 Minute Floatation Therapy Session"
       @transaction.price = 75.0
     elsif (transaction_params[:item] == "2")
       @transaction.item = "6 Week Stress Release Program (Payment Plan)"
-      @transaction.price = 83.0
+      @transaction.price = 69.0
       is_subscription = true
     elsif (transaction_params[:item] == "3")
       @transaction.item = "Test"
