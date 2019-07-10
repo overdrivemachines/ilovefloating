@@ -71,7 +71,7 @@ $(document).on("turbolinks:load", function() {
   var form = document.getElementById('new-transaction-form');
   form.addEventListener('submit', function(event) {
     event.preventDefault();
-
+    $("#new-transaction-form input[type='submit']").attr('disabled', true);
 
     stripe.createToken(card).then(function(result) {
       if (result.error) {
@@ -88,7 +88,7 @@ $(document).on("turbolinks:load", function() {
 
   function enableSubmitButton() {
     $("#new-transaction-form input[type='submit']").attr('disabled', false);
-    $("#new-transaction-form input[type='submit']").prop('disabled', false);
+    // $("#new-transaction-form input[type='submit']").prop('disabled', false);
   }
 
   // Submit the form with the token ID.
