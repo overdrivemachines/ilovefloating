@@ -66,6 +66,7 @@ module Stripe
             e_logger.error "Subscription Object is nil. Subscription cannot be updated"
           else
             e_logger.info "Subscription Updated Successfully"
+            e_logger.info "New Installments: " + subscription_object["metadata"]["installments_paid"].to_s
             if count >= 6
                 subscription_object.delete
             end
