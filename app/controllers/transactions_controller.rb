@@ -35,11 +35,15 @@ class TransactionsController < ApplicationController
       @transaction.price = 75.0
     elsif (transaction_params[:item] == "2")
       @transaction.item = "6 Week Stress Release Program (Payment Plan)"
-      @transaction.price = 75.0
+      @transaction.price = 83.0
       is_subscription = true
     elsif (transaction_params[:item] == "3")
       @transaction.item = "Test"
       @transaction.price = 2.0
+    elsif (transaction_params[:item] == "4")
+      @transaction.item = "Test Subscription"
+      @transaction.price = 2.25
+      is_subscription = true
     end
 
     # we will save the transaction first. This is a good way to check for validation errors
@@ -92,14 +96,14 @@ class TransactionsController < ApplicationController
                   source: "RoR"
               },
           }, stripe_account: connected_account.sid )
-          puts "Subscription ID: " + subscription.id
           @transaction.charge_id = subscription["id"]
           @transaction.save
           redirect_to connected_accounts_url, flash: { success: "Transaction completed successfully. Subscription ID: #{subscription["id"]}. Amount: $#{@transaction.price}."}
           return
         rescue StandardError => e
           flash[:error] = "Error: Transaction not completed. Subscription failed. " + e.to_s
-          redirect_to new_transaction_url and return
+          redirect_to new_transaction_url
+          return
         end
 
       else
@@ -131,7 +135,6 @@ class TransactionsController < ApplicationController
                         'platform_customer_id' => customer_id},
           }, stripe_account: connected_account.sid)
 
-          puts "***Charge ID: " + charge.id
         rescue StandardError => e
           flash[:error] = "Error: Transaction not completed. Charge failed. " + e.to_s
           redirect = true
@@ -155,7 +158,6 @@ class TransactionsController < ApplicationController
                   installments_paid: 0,
               },
           }, stripe_account: connected_account.sid )
-          puts "Subscription: " + subscription.to_s
           @transaction.charge_id = subscription["id"]
           @transaction.save
           redirect_to connected_accounts_url, flash: { success: "Transaction completed successfully. Subscription ID: #{subscription["id"]}. Amount: $#{@transaction.price}. Stripe Fees: $#{stripe_fee}. Application Fee: $#{application_fee}"}
@@ -190,7 +192,6 @@ class TransactionsController < ApplicationController
       if (customers["data"].size == 0)
         # Customer not found
         # Create a new Customer on Connected Account
-        puts "Creating new Customer"
         customer = Stripe::Customer.create({
           name: name,
           email: email,
@@ -198,12 +199,9 @@ class TransactionsController < ApplicationController
           source: stripe_token, # obtained with Stripe.js
         }, stripe_account: sid)
         customer_id = customer["id"];
-        puts "New Customer ID: " + customer_id
       else
         # Customer already exists, get the Customer ID
-        puts "Customer #{name} already exists"
         customer_id = customers["data"][0]["id"]
-        puts "Customer ID: " + customer_id
         # Update Name, Phone and Credit Card info (source)
         Stripe::Customer.update(
           customer_id,
@@ -213,7 +211,6 @@ class TransactionsController < ApplicationController
             phone: phone,
             source: stripe_token # obtained with Stripe.js
           }, stripe_account: sid)
-        puts "Customer Updated"
       end
     rescue StandardError => e
       @redirect = true
@@ -294,7 +291,7 @@ class TransactionsController < ApplicationController
         plans["data"].each do |p|
           if ((p["metadata"]["code"] == Digest::SHA1.hexdigest(p.id)) && 
             (p["interval"] == "week") &&
-            (p["amount"] == "8300"))
+            (p["amount"] == (@transaction.price * 100).to_i)
             # Product found
             # Update the name in case someone changed it
             plan = Stripe::Plan.update(
@@ -309,7 +306,7 @@ class TransactionsController < ApplicationController
       if (plan.nil?)
         # Create a New Plan
         plan = Stripe::Plan.create({
-          amount: 8300,
+          amount: (@transaction.price * 100).to_i,
           interval: 'week',
           product: product_id,
           nickname: 'Weekly',
