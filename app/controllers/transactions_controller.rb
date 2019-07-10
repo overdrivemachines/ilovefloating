@@ -32,7 +32,7 @@ class TransactionsController < ApplicationController
       @transaction.price = 375.0
     elsif (transaction_params[:item] == "1")
       @transaction.item = "60 Minute Floatation Therapy Session"
-      @transaction.price = 75.0
+      @transaction.price = 50.0
     elsif (transaction_params[:item] == "2")
       @transaction.item = "6 Week Stress Release Program (Payment Plan)"
       @transaction.price = 69.0
