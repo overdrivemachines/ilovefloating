@@ -37,13 +37,13 @@ class TransactionsController < ApplicationController
       @transaction.item = "6 Week Stress Release Program (Payment Plan)"
       @transaction.price = 69.0
       is_subscription = true
-    # elsif (transaction_params[:item] == "3")
-    #   @transaction.item = "Test"
-    #   @transaction.price = 2.0
-    # elsif (transaction_params[:item] == "4")
-    #   @transaction.item = "Test Subscription"
-    #   @transaction.price = 2.25
-    #   is_subscription = true
+    elsif (transaction_params[:item] == "3")
+      @transaction.item = "Test"
+      @transaction.price = 0.61
+    elsif (transaction_params[:item] == "4")
+      @transaction.item = "Test Subscription"
+      @transaction.price = 0.51
+      is_subscription = true
     end
 
     # we will save the transaction first. This is a good way to check for validation errors
@@ -146,7 +146,6 @@ class TransactionsController < ApplicationController
       end
 
       if (is_subscription)
-        # TODO: setup a Product and a Plan
         begin
           subscription = Stripe::Subscription.create({
               customer: customer_id,
