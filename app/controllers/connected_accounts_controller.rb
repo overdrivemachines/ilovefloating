@@ -42,7 +42,7 @@ class ConnectedAccountsController < ApplicationController
   def destroy
     Stripe.api_key = Rails.application.credentials.stripe[Rails.env.to_sym][:secret_key]
     acct = Stripe::Account.retrieve(@connected_account.sid)
-    acct.deauthorize('ca_FEO5gO2qc2qBntLsQ8J3Okp7w3cMTONy')
+    acct.deauthorize(Rails.application.credentials.stripe[Rails.env.to_sym][:client_id])
     @connected_account.destroy
     redirect_to connected_accounts_url, notice: 'Connected account was successfully removed.'
   end
@@ -105,7 +105,8 @@ class ConnectedAccountsController < ApplicationController
   # GET /connected_accounts/add
   def add
     if (stripe_params[:error])
-      redirect_to connected_accounts_url
+      redirect_to connected_accounts_url, flash: { error: stripe_params[:error_description]} 
+      return
     else
       # There is no error.
       # https://stripe.com/docs/connect/standard-accounts#token-request
